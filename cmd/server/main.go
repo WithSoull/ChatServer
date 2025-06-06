@@ -2,34 +2,74 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"flag"
 	"log"
 	"net"
 
+	"github.com/WithSoull/ChatServer/internal/config"
+	"github.com/WithSoull/ChatServer/internal/config/env"
+	"github.com/WithSoull/ChatServer/internal/queries"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
-	"github.com/brianvoe/gofakeit"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
-const (
-  grpcPort = 50050
-)
 
+
+var configPath string
+
+func init() {
+  flag.StringVar(&configPath, "config-path", ".env", "path to config file")
+}
 
 type server struct {
   desc.UnimplementedChatV1Server
+	db *pgxpool.Pool
 }
 
+func NewServer(dbPool *pgxpool.Pool) *server {
+	return &server{
+		db: dbPool,
+	}
+}
 
 func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
-  chatId := gofakeit.Int64()
-  log.Printf("Chat(%d) creating with this users:", chatId)
-  for _, user := range req.GetUsernames() {
-    log.Printf("User: %s", user)
+	if len(req.GetUsernames()) == 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "no users in chat")
+	}
+
+	// Begin transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+    log.Printf("failed to begin transaction: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to begin transaction")
+	}
+	defer tx.Rollback(ctx)
+
+	// Insert new chat and users
+	var chatId int64
+	err = tx.QueryRow(ctx, queries.InsertNewChat).Scan(&chatId)
+	if err != nil {
+		log.Printf("failed to create new chat with error: %v", err)
+		return nil, status.Error(codes.Internal, "failed to create new chat")
+	}
+	
+  for _, username := range req.GetUsernames() {
+		_, err = tx.Exec(ctx, queries.InsertNewParticipant, chatId, username)
+		if err != nil {
+			log.Printf("failed to create add participant %s with error: %v", username, err)
+			return nil, status.Error(codes.Internal, "failed to create new chat")
+		}
   }
-  
-  // TODO: Creating Chat and adding users
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+    log.Printf("failed to commit transaction: %v", err)
+    return nil, status.Errorf(codes.Internal, "failed to commit transaction")
+	}
 
   return &desc.CreateResponse{
     Id: chatId,
@@ -58,17 +98,48 @@ func (s *server) SendMessage(ctx context.Context, req *desc.SendMessageRequest) 
   return &emptypb.Empty{}, nil
 }
 func main() {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
+	flag.Parse()
+	ctx := context.Background()
+
+	//Load config
+	if err := config.Load(configPath); err != nil {
+    log.Printf("configPath=%s", configPath)
+    log.Fatalf("failed load config: %s", err)
+	}
+
+  grpcConfig, err := env.NewGRPCConfig()
+  if err != nil {
+    log.Fatalf("failed load grpc config: %s", err)
+  }
+
+	pgConfig, err := env.NewPGConfig()
+	if err != nil {
+		log.Fatalf("failed load pg congig: %s", err)
+	}
+
+	// Create connection pool
+	dbPool, err := pgxpool.New(ctx, pgConfig.DSN())
+	if err != nil {
+		log.Fatalf("failed to create connection pool: %s", err)
+	}
+	defer dbPool.Close()
+
+	// Ping db
+  if err := dbPool.Ping(ctx); err != nil {
+    log.Fatalf("failed to connect to database: %v", err)
+  }
+
+	lis, err := net.Listen("tcp", grpcConfig.Address())
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
+	desc.RegisterChatV1Server(s, NewServer(dbPool))
+
 	reflection.Register(s)
-	desc.RegisterChatV1Server(s, &server{})
 
 	log.Printf("server listening at %v", lis.Addr())
-
 	if err = s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
