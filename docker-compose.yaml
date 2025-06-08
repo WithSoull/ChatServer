@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  postgres_volume:
+
+services:
+  pg-chat:
+    image: postgres:16-alpine3.20
+    environment:
+      - "POSTGRES_DB=${PG_DATABASE_NAME}"
+      - "POSTGRES_USER=${PG_USER}"
+      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+       
+  migrator:
+    build:
+      context: .
+      dockerfile: migrator.Dockerfile
+
+    restart: on-failure
+    environment:
+        DB_HOST: pg-chat
+
+  chat-server:
+    build: .
+    ports:
+      - "${GRPC_PORT}:${GRPC_PORT}"
+    restart: unless-stopped
