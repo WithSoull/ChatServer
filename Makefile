@@ -18,6 +18,7 @@ get-deps:
 	go get -u google.golang.org/grpc
 	go get -u golang.org/x/crypto
 	go get -u github.com/joho/godotenv
+	go get -u github.com/lib/pq
 
 generate-api:
 	mkdir -p pkg/chat/v1

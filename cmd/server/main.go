@@ -2,14 +2,17 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"log"
 	"net"
+	"strings"
 
 	"github.com/WithSoull/ChatServer/internal/config"
 	"github.com/WithSoull/ChatServer/internal/config/env"
 	"github.com/WithSoull/ChatServer/internal/queries"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -77,26 +80,64 @@ func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Cre
 }
 
 func (s *server) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-  log.Printf("Chat deleting {Id: %d}",
-    req.GetId(),
-  )
+	// Begin transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+    log.Printf("failed to begin transaction: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to begin transaction")
+	}
+	defer tx.Rollback(ctx)
 
-  // TODO: Chat delete
+	// Deleting chat
+	_, err = tx.Exec(ctx, queries.DeleteChatById, req.GetId())
+	if err != nil {
+    log.Printf("failed to delete chat: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete chat")
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+    log.Printf("failed to commit transaction: %v", err)
+    return nil, status.Errorf(codes.Internal, "failed to commit transaction")
+	}
 
   return &emptypb.Empty{}, nil
 }
 
 func (s *server) SendMessage(ctx context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
-  log.Printf("Message sent from %s with text: \"%s\" at %s",
-    req.GetFrom(),
-    req.GetText(),
-    req.GetSentAt(),
-  )
+	// Begin transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+    log.Printf("failed to begin transaction: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to begin transaction")
+	}
+	defer tx.Rollback(ctx)
 
-  // TODO: Send message
+	// Insert message
+	_, err = tx.Exec(ctx, queries.InsertNewMessage, req.GetChatId(), req.GetFrom(), req.GetText())
+	if err != nil {
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) {
+					switch pgErr.Code {
+					case "23503": // Foreign key violation
+							if strings.Contains(pgErr.Message, "messages_chat_id_fkey") {
+									return nil, status.Error(codes.NotFound, "chat not found")
+							}
+					}
+			}
+    
+    log.Printf("failed to send message: %v", err)
+    return nil, status.Errorf(codes.Internal, "failed to send message: %v", err)
+	}
 
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+    log.Printf("failed to commit transaction: %v", err)
+    return nil, status.Errorf(codes.Internal, "failed to commit transaction")
+	}
   return &emptypb.Empty{}, nil
 }
+
 func main() {
 	flag.Parse()
 	ctx := context.Background()
