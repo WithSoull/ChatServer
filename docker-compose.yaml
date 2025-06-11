@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  postgres_volume:
+  postgres_volume_chat_server:
 
 services:
   pg-chat:
@@ -10,11 +10,10 @@ services:
       - "POSTGRES_DB=${PG_DATABASE_NAME}"
       - "POSTGRES_USER=${PG_USER}"
       - "POSTGRES_PASSWORD=${PG_PASSWORD}"
-      - "POSTGRES_PORT=${PG_PORT}"
     ports:
-      - "${PG_PORT}:5432"
+      - "${PG_PORT_OUTER}:${PG_PORT_INNER}"
     volumes:
-      - postgres_volume:/var/lib/postgresql/data
+      - postgres_volume_chat_server:/var/lib/postgresql/data
        
   migrator:
     build:
@@ -24,9 +23,11 @@ services:
     restart: on-failure
     environment:
         DB_HOST: pg-chat
+    env_file: .env
 
   chat-server:
     build: .
     ports:
       - "${GRPC_PORT}:${GRPC_PORT}"
     restart: unless-stopped
+    env_file: .env

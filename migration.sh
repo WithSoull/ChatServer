@@ -8,7 +8,7 @@ fi
 
 # Установка значений по умолчанию
 DB_HOST=${PG_HOST:-localhost}
-DB_PORT=${PG_PORT:-5432}
+DB_PORT=${PG_PORT_INNER:-5432}
 DB_NAME=${PG_DATABASE_NAME:-postgres}
 DB_USER=${PG_USER:-postgres}
 DB_PASSWORD=${PG_PASSWORD:-}
