@@ -12,7 +12,7 @@ var _ config.PGCongif = (*pgConfig)(nil)
 const (
   dsnEnvName = "PG_DSN"
 	hostEnvName = "PG_HOST"
-	portEnvName = "PG_PORT"
+	portEnvName = "PG_PORT_INNER"
 	dbEnvName = "PG_DATABASE_NAME"
 	userEnvName = "PG_USER"
 	passwordEnvName = "PG_PASSWORD"
