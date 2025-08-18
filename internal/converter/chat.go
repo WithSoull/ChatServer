@@ -1,4 +1,4 @@
-package chat
+package converter
 
 import (
 	"github.com/WithSoull/ChatServer/internal/model"

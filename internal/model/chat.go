@@ -17,9 +17,11 @@ type ChatInfo struct {
 }
 
 type Chat struct {
-	ChatID   int64    `json:"chat_id"`
-	OwnerID  int64    `json:"owner_id"`
-	ChatInfo ChatInfo `json:"chat_info"`
+	ChatID    int64     `json:"chat_id"`
+	OwnerID   int64     `json:"owner_id"`
+	ChatInfo  ChatInfo  `json:"chat_info"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"upated_at"`
 }
 
 type Message struct {
