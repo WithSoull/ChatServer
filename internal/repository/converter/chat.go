@@ -1,0 +1,100 @@
+package converter
+
+import (
+	"time"
+
+	dmodel "github.com/WithSoull/ChatServer/internal/model" // domain/service model
+	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
+)
+
+// ---------- Role ----------
+
+func FromModelToRepoRole(r dmodel.Role) rmodel.Role {
+	switch r {
+	case dmodel.ROLE_ADMIN:
+		return rmodel.ROLE_ADMIN
+	case dmodel.ROLE_OWNER:
+		return rmodel.ROLE_OWNER
+	default:
+		return rmodel.ROLE_USER
+	}
+}
+
+func FromRepoToModelRole(r rmodel.Role) dmodel.Role {
+	switch r {
+	case rmodel.ROLE_ADMIN:
+		return dmodel.ROLE_ADMIN
+	case rmodel.ROLE_OWNER:
+		return dmodel.ROLE_OWNER
+	default:
+		return dmodel.ROLE_USER
+	}
+}
+
+// ---------- Chat ----------
+
+func FromModelToRepoChat(c dmodel.Chat) rmodel.Chat {
+	return rmodel.Chat{
+		ID:          c.ChatID,
+		OwnerID:     c.OwnerID,
+		Name:        c.ChatInfo.Name,
+		Description: c.ChatInfo.Description,
+		CreatedAt:   c.CreatedAt,
+		UpdatedAt:   c.UpdatedAt,
+	}
+}
+
+func FromRepoToModelChat(r rmodel.Chat, userIDs []int64) dmodel.Chat {
+	return dmodel.Chat{
+		ChatID:  r.ID,
+		OwnerID: r.OwnerID,
+		ChatInfo: dmodel.ChatInfo{
+			Name:        r.Name,
+			Description: r.Description,
+			UserIDs:     userIDs,
+		},
+		CreatedAt: r.CreatedAt,
+		UpdatedAt: r.UpdatedAt,
+	}
+}
+
+// ---------- ChatUser ----------
+
+func FromModelToRepoChatParticipant(chatID, userID int64, role dmodel.Role, createdAt time.Time) rmodel.ChatParticipant {
+	return rmodel.ChatParticipant{
+		ChatID:    chatID,
+		UserID:    userID,
+		Role:      FromModelToRepoRole(role),
+		CreatedAt: createdAt,
+	}
+}
+
+func FromRepoToModelChatParticipant(r rmodel.ChatParticipant) (chatID, userID int64, role dmodel.Role, createdAt time.Time) {
+	return r.ChatID, r.UserID, FromRepoToModelRole(r.Role), r.CreatedAt
+}
+
+// ---------- Message ----------
+
+func FromModelToRepoMessage(m dmodel.Message) rmodel.Message {
+	return rmodel.Message{
+		ID:        m.MessageID,
+		ChatID:    m.ChatID,
+		SenderID:  m.SenderID,
+		Text:      m.Text,
+		IsPinned:  m.IsPinned,
+		SendAt:    m.SendAt,
+		UpdatedAt: m.UpdatedAt,
+	}
+}
+
+func FromRepoToModelMessage(r rmodel.Message) dmodel.Message {
+	return dmodel.Message{
+		MessageID: r.ID,
+		SenderID:  r.SenderID,
+		ChatID:    r.ChatID,
+		Text:      r.Text,
+		IsPinned:  r.IsPinned,
+		SendAt:    r.SendAt,
+		UpdatedAt: r.UpdatedAt,
+	}
+}

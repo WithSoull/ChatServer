@@ -1,20 +1,29 @@
 package repository
 
-import "github.com/WithSoull/ChatServer/internal/model"
+import (
+	"context"
+
+	"github.com/WithSoull/ChatServer/internal/model"
+)
 
 type ChatRepo interface {
-	Create(chat model.Chat) (int64, error)
-	Delete(chatID int64) error
-	Get(chatID int64) (model.Chat, error)
-	AddUser(chatID, userID int64, role model.Role) error
-	RemoveUser(chatID, userID int64) error
-	UpdateUserRole(chatID, userID int64, role model.Role) error
+	Create(ctx context.Context, chat model.Chat) (int64, error)
+	Delete(ctx context.Context, chatID int64) error
+	Get(ctx context.Context, chatID int64) (model.Chat, error)
+}
+
+type ChatParticipant interface {
+	AddUser(ctx context.Context, chatID, userID int64, role model.Role) error
+	RemoveUser(ctx context.Context, chatID, userID int64) error
+	GetUserRole(ctx context.Context, chatID, userID int64) (bool, model.Role)
+	UpdateUserRole(ctx context.Context, chatID, userID int64, role model.Role) error
 }
 
 type MessageRepo interface {
-	Create(msg model.Message) error
-	Delete(messageID int64) error
-	Update(messageID int64, text *string, isPinned *bool) error
-	GetByChat(chatID int64) ([]model.Message, error)
-	Get(messageID int64) (model.Message, error)
+	Create(ctx context.Context, msg model.Message) error
+	Delete(ctx context.Context, messageID int64) error
+	Update(ctx context.Context, msg model.Message) error
+	Get(ctx context.Context, messageID int64) (model.Message, error)
+	GetMessageSenderID(ctx context.Context, messageID int64) int64
+	GetByChat(ctx context.Context, chatID int64) ([]model.Message, error)
 }
