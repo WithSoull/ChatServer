@@ -10,7 +10,7 @@ const (
 	ROLE_OWNER
 )
 
-// Таблица chats
+// Table chats
 type Chat struct {
 	ID          int64     `db:"id"`
 	OwnerID     int64     `db:"owner_id"`
@@ -20,15 +20,16 @@ type Chat struct {
 	UpdatedAt   time.Time `db:"updated_at"`
 }
 
-// Таблица chat_participants
+// Table chat_participants
 type ChatParticipant struct {
 	ChatID    int64     `db:"chat_id"`
 	UserID    int64     `db:"user_id"`
 	Role      Role      `db:"role"`
 	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
-// Таблица messages
+// Table messages
 type Message struct {
 	ID        int64     `db:"id"`
 	ChatID    int64     `db:"chat_id"`

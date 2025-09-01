@@ -62,7 +62,7 @@ func (p *pg) QueryContext(ctx context.Context, q db.Query, args ...interface{}) 
 
 	tx, ok := txctx.ExtractTx(ctx)
 	if ok {
-		return tx.Query(ctx, q.QueryRaw, args)
+		return tx.Query(ctx, q.QueryRaw, args...)
 	}
 
 	return p.dbc.Query(ctx, q.QueryRaw, args...)
@@ -73,7 +73,7 @@ func (p *pg) QueryRowContext(ctx context.Context, q db.Query, args ...interface{
 
 	tx, ok := txctx.ExtractTx(ctx)
 	if ok {
-		return tx.QueryRow(ctx, q.QueryRaw, args)
+		return tx.QueryRow(ctx, q.QueryRaw, args...)
 	}
 
 	return p.dbc.QueryRow(ctx, q.QueryRaw, args...)

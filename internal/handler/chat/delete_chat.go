@@ -7,6 +7,6 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (h *Handler) Delete(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
+func (h *Handler) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, h.service.DeleteChat(ctx, req.GetSenderId(), req.GetChatId())
 }

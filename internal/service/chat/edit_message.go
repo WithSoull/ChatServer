@@ -2,7 +2,10 @@ package chat
 
 import (
 	"context"
-	"errors"
+	"log"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (s *Service) EditMessage(
@@ -13,31 +16,37 @@ func (s *Service) EditMessage(
 ) error {
 	msg, err := s.msgRepo.Get(ctx, messageID)
 	if err != nil {
-		return err
+		log.Printf("failed to get message %d: %v", messageID, err)
+		return status.Errorf(codes.NotFound, "message not found")
 	}
 
-	ok, senderRole := s.chatRepo.GetUserRole(ctx, msg.ChatID, senderID)
+	ok, senderRole := s.chatParticipantRepo.GetUserRole(ctx, msg.ChatID, senderID)
 	if !ok {
-		return errors.New("you are not a member of the chat")
+		return status.Errorf(codes.PermissionDenied, "you are not a member of the chat")
 	}
 
 	if newText == nil && newIsPinned == nil {
-		return errors.New("no changes provided")
+		return status.Errorf(codes.InvalidArgument, "no changes provided")
 	}
 
 	if newText != nil {
 		if senderID != msg.SenderID {
-			return errors.New("you can edit only your own messages")
+			return status.Errorf(codes.PermissionDenied, "you can edit only your own messages")
 		}
 		msg.Text = *newText
 	}
 
 	if newIsPinned != nil {
 		if senderRole < 1 {
-			return errors.New("only admins or owner can pin/unpin messages")
+			return status.Errorf(codes.PermissionDenied, "only admins or owner can pin/unpin messages")
 		}
 		msg.IsPinned = *newIsPinned
 	}
 
-	return s.msgRepo.Update(ctx, msg)
+	if err := s.msgRepo.Update(ctx, msg); err != nil {
+		log.Printf("failed to update message %d: %v", messageID, err)
+		return status.Errorf(codes.Internal, "failed to update message")
+	}
+
+	return nil
 }

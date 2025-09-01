@@ -3,6 +3,7 @@ package converter
 import (
 	"time"
 
+	"github.com/WithSoull/ChatServer/internal/model"
 	dmodel "github.com/WithSoull/ChatServer/internal/model" // domain/service model
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
 )
@@ -97,4 +98,26 @@ func FromRepoToModelMessage(r rmodel.Message) dmodel.Message {
 		SendAt:    r.SendAt,
 		UpdatedAt: r.UpdatedAt,
 	}
+}
+
+// ---------- Messages ----------
+
+func FromRepoToModelMessages(messages []rmodel.Message) []model.Message {
+	out := make([]model.Message, len(messages))
+
+	for _, message := range messages {
+		out = append(out, FromRepoToModelMessage(message))
+	}
+
+	return out
+}
+
+func FromModelToRepoMessages(messages []model.Message) []rmodel.Message {
+	out := make([]rmodel.Message, len(messages))
+
+	for _, message := range messages {
+		out = append(out, FromModelToRepoMessage(message))
+	}
+
+	return out
 }

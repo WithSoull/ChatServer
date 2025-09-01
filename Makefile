@@ -36,10 +36,6 @@ copy-to-server: build
 	scp service_linux withsoull@158.160.179.174:~
 	rm service_linux
 
-docker-build-and-push:
-	docker buildx build --no-cache --platform linux/amd64 -t cr.yandex/crpq9mbu5a8g6imqo2g4/auth:0.0.1 .
-	docker push cr.yandex/crpq9mbu5a8g6imqo2g4/auth:0.0.1
-
 # Goose (migrations)
 local-migration-status:
 	$(LOCAL_BIN)/goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} status -v

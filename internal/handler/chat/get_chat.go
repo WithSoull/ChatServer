@@ -3,7 +3,7 @@ package chat
 import (
 	"context"
 
-	conventer "github.com/WithSoull/ChatServer/internal/conventer/chat"
+	converter "github.com/WithSoull/ChatServer/internal/converter"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
 )
 
@@ -14,7 +14,7 @@ func (h *Handler) GetChat(ctx context.Context, req *desc.GetChatRequest) (*desc.
 	}
 
 	return &desc.GetChatResponse{
-		Chat:     conventer.FromModelToProtoChat(chat),
-		Messages: conventer.FromModelToProtoMessages(msgs),
+		Chat:     converter.FromModelToProtoChat(chat),
+		Messages: converter.FromModelToProtoMessages(msgs),
 	}, nil
 }
