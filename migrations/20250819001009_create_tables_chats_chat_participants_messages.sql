@@ -1,7 +1,6 @@
 -- +goose Up
 BEGIN;
 
--- Таблица чатов
 CREATE TABLE chats (
     id          BIGSERIAL PRIMARY KEY,
     owner_id    BIGINT      NOT NULL,
@@ -11,7 +10,6 @@ CREATE TABLE chats (
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Участники чатов
 CREATE TABLE chat_participants (
     chat_id    BIGINT      NOT NULL,
     user_id    BIGINT      NOT NULL,
@@ -25,7 +23,6 @@ CREATE TABLE chat_participants (
         CHECK (role IN (0,1,2))
 );
 
--- Сообщения
 CREATE TABLE messages (
     id         BIGSERIAL PRIMARY KEY,
     chat_id    BIGINT      NOT NULL,
