@@ -2,6 +2,7 @@ package chat
 
 import (
 	"context"
+	"log"
 
 	"github.com/WithSoull/ChatServer/internal/model"
 	"google.golang.org/grpc/codes"
@@ -25,6 +26,7 @@ func (s *Service) GetChat(ctx context.Context, senderID, chatID int64) (model.Ch
 	chat.ChatInfo.UserIDs = chatParticipants
 
 	msgs, err := s.msgRepo.GetByChat(ctx, chatID)
+	log.Printf("[Service Layer] messages: %+v", msgs)
 	if err != nil {
 		return model.Chat{}, nil, status.Errorf(codes.Internal, "failed to get messages of the chat")
 	}

@@ -101,21 +101,21 @@ func FromModelToProtoMessage(model model.Message) *desc.Message {
 
 // Messages (slice of model.Message)
 func FromProtoToModelMessages(messages []*desc.Message) []model.Message {
-	out := make([]model.Message, len(messages))
+	msgs := make([]model.Message, len(messages))
 
-	for _, message := range messages {
-		out = append(out, FromProtoToModelMessage(message))
+	for i, message := range messages {
+		msgs[i] = FromProtoToModelMessage(message)
 	}
 
-	return out
+	return msgs
 }
 
 func FromModelToProtoMessages(messages []model.Message) []*desc.Message {
-	out := make([]*desc.Message, len(messages))
+	msgs := make([]*desc.Message, len(messages))
 
-	for _, message := range messages {
-		out = append(out, FromModelToProtoMessage(message))
+	for i, message := range messages {
+		msgs[i] = FromModelToProtoMessage(message)
 	}
 
-	return out
+	return msgs
 }

@@ -103,21 +103,21 @@ func FromRepoToModelMessage(r rmodel.Message) dmodel.Message {
 // ---------- Messages ----------
 
 func FromRepoToModelMessages(messages []rmodel.Message) []model.Message {
-	out := make([]model.Message, len(messages))
+	msgs := make([]model.Message, len(messages))
 
-	for _, message := range messages {
-		out = append(out, FromRepoToModelMessage(message))
+	for i, message := range messages {
+		msgs[i] = FromRepoToModelMessage(message)
 	}
 
-	return out
+	return msgs
 }
 
 func FromModelToRepoMessages(messages []model.Message) []rmodel.Message {
-	out := make([]rmodel.Message, len(messages))
+	msgs := make([]rmodel.Message, len(messages))
 
-	for _, message := range messages {
-		out = append(out, FromModelToRepoMessage(message))
+	for i, message := range messages {
+		msgs[i] = FromModelToRepoMessage(message)
 	}
 
-	return out
+	return msgs
 }

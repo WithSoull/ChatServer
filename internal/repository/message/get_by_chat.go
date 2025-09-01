@@ -59,6 +59,7 @@ func (r *messageRepo) GetByChat(ctx context.Context, chatID int64) ([]model.Mess
 		log.Printf("iteration error while scanning messages from chat %d: %v", chatID, err)
 		return nil, status.Errorf(codes.Internal, "failed to get messages")
 	}
-
+	log.Printf("[Repository Layer - message] rmessages=%+v", rmessages)
+	log.Printf("[Repository Layer - message] messages=%+v", converter.FromRepoToModelMessages(rmessages))
 	return converter.FromRepoToModelMessages(rmessages), nil
 }
