@@ -2,15 +2,13 @@ package message
 
 import (
 	"context"
-	"log"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (r *messageRepo) Update(ctx context.Context, msg model.Message) error {
@@ -35,12 +33,11 @@ func (r *messageRepo) Update(ctx context.Context, msg model.Message) error {
 
 	res, err := r.db.DB().ExecContext(ctx, q, args...)
 	if err != nil {
-		log.Printf("failed to update message %d: %v", rmsg.ID, err)
-		return status.Errorf(codes.Internal, "failed to update message")
+		return err
 	}
 
 	if res.RowsAffected() == 0 {
-		return status.Errorf(codes.NotFound, "message not found")
+		return domainerrors.ErrMessageNotFound
 	}
 
 	return nil

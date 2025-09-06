@@ -2,39 +2,31 @@ package chat
 
 import (
 	"context"
-	"errors"
 	"log"
 
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
-	"github.com/jackc/pgconn"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func (s *Service) AddUser(ctx context.Context, senderID, chatID, userID int64, role model.Role) error {
 	// role > 1 is equal admin or owner
-	ok, senderRole := s.chatParticipantRepo.GetUserRole(ctx, chatID, senderID)
-	if !ok {
-		return status.Errorf(codes.PermissionDenied, "you are not a member of the chat")
-	}
-
-	if senderRole < 1 {
-		return status.Errorf(codes.PermissionDenied, "only admins and owner of the chat can add new users")
-	}
-
-	if role == model.ROLE_OWNER {
-		return status.Errorf(codes.InvalidArgument, "only 1 owner can be in the chat")
-	}
-
-	err := s.chatParticipantRepo.AddUser(ctx, chatID, userID, role)
+	senderRole, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_ADMIN)
 	if err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-			return status.Errorf(codes.AlreadyExists, "user already in the chat, for updating role use update_role endpoint")
-		}
+		return err
+	}
+	if role >= senderRole {
+		return status.Errorf(codes.PermissionDenied, "cannot assign a role higher or equal than your own")
+	}
 
-		log.Printf("[Service Layer] failed to add user %d to chat %d: %v", userID, chatID, err)
-		return status.Errorf(codes.Internal, "failed to add user to chat")
+	err = s.chatParticipantRepo.AddUser(ctx, chatID, userID, role)
+	if err != nil {
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("[Service Layer] failed to add user %d to chat %d: %v", userID, chatID, err)
+		}
+		return grpcErr
 	}
 
 	return nil

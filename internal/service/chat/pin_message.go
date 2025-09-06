@@ -6,15 +6,9 @@ import (
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func (s *Service) EditMessage(ctx context.Context, senderID, messageID int64, newText string) error {
-	if newText == "" {
-		return status.Error(codes.InvalidArgument, "no changes provided")
-	}
-
+func (s *Service) PinMessage(ctx context.Context, senderID, messageID int64, newIsPinned bool) error {
 	msg, err := s.msgRepo.Get(ctx, messageID)
 	if err != nil {
 		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
@@ -24,15 +18,11 @@ func (s *Service) EditMessage(ctx context.Context, senderID, messageID int64, ne
 		return grpcErr
 	}
 
-	if senderID != msg.SenderID {
-		return status.Errorf(codes.PermissionDenied, "you can edit only your own messages")
-	}
-
-	if _, err := s.checkUserRole(ctx, msg.ChatID, senderID, model.ROLE_USER); err != nil {
+	if _, err := s.checkUserRole(ctx, msg.ChatID, senderID, model.ROLE_ADMIN); err != nil {
 		return err
 	}
 
-	msg.Text = newText
+	msg.IsPinned = newIsPinned
 
 	if err := s.msgRepo.Update(ctx, msg); err != nil {
 		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)

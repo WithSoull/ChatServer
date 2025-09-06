@@ -4,31 +4,41 @@ import (
 	"context"
 	"log"
 
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Service) GetChat(ctx context.Context, senderID, chatID int64) (model.Chat, []model.Message, error) {
-	if ok, _ := s.chatParticipantRepo.GetUserRole(ctx, chatID, senderID); !ok {
-		return model.Chat{}, nil, status.Errorf(codes.PermissionDenied, "you are not a member of this chat")
+	if _, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_USER); err != nil {
+		return model.Chat{}, nil, err
 	}
 
 	chat, err := s.chatRepo.Get(ctx, chatID)
 	if err != nil {
-		return model.Chat{}, nil, status.Errorf(codes.NotFound, "chat not found")
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("[Service Layer] failed to get chat: %v", err)
+		}
+		return model.Chat{}, nil, grpcErr
 	}
 
 	chatParticipants, err := s.chatParticipantRepo.GetUsers(ctx, chatID)
 	if err != nil {
-		return model.Chat{}, nil, status.Errorf(codes.Internal, "failed to get users of the chat")
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("[Service Layer] failed to get users of the chat: %v", err)
+		}
+		return model.Chat{}, nil, grpcErr
 	}
 	chat.ChatInfo.UserIDs = chatParticipants
 
 	msgs, err := s.msgRepo.GetByChat(ctx, chatID)
-	log.Printf("[Service Layer] messages: %+v", msgs)
 	if err != nil {
-		return model.Chat{}, nil, status.Errorf(codes.Internal, "failed to get messages of the chat")
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("[Service Layer] failed to get messages of the chat: %v", err)
+		}
+		return model.Chat{}, nil, grpcErr
 	}
 
 	return chat, msgs, nil

@@ -3,7 +3,6 @@ syntax = "proto3";
 package chat_v1;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/WithSoull/ChatServer/pkg/chat/v1;chat_v1";
@@ -23,6 +22,7 @@ service ChatV1 {
   rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty);
   rpc DeleteMessage(DeleteMessageRequest) returns (google.protobuf.Empty);
   rpc EditMessage(EditMessageRequest) returns (google.protobuf.Empty);
+  rpc PinMessage(PinMessageRequest) returns (google.protobuf.Empty);
 }
 
 // --------------------
@@ -133,8 +133,14 @@ message DeleteMessageRequest {
 
 message EditMessageRequest {
   int64 message_id = 1;
-  google.protobuf.StringValue new_text = 2;
-  google.protobuf.BoolValue new_is_pinned = 3;
+  string new_text = 2;
+
+  int64 sender_id = 10;
+}
+
+message PinMessageRequest {
+  int64 message_id = 1;
+  bool new_is_pinned = 3;
 
   int64 sender_id = 10;
 }

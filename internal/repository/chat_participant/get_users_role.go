@@ -2,18 +2,23 @@ package chat_participant
 
 import (
 	"context"
-	"database/sql"
 	"errors"
-	"log"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
+	"github.com/jackc/pgx/v4"
 )
 
-func (r *chatParticipantRepo) GetUserRole(ctx context.Context, chatID, userID int64) (bool, model.Role) {
+// GetUserRole cant define who from user and chat does not exist
+// that's why you should use checkUserRole from service layer to
+// define this 2 corner cases
+// To define the difference you need to select in chats table,
+// so chat_participant table does not have access to another table
+func (r *chatParticipantRepo) GetUserRole(ctx context.Context, chatID, userID int64) (model.Role, error) {
 	builder := sq.Select(RoleColumn).
 		From(TableName).
 		PlaceholderFormat(sq.Dollar).
@@ -21,8 +26,7 @@ func (r *chatParticipantRepo) GetUserRole(ctx context.Context, chatID, userID in
 
 	query, args, err := builder.ToSql()
 	if err != nil {
-		log.Printf("failed to build query for getUserRole (chatID=%d userID=%d): %v", chatID, userID, err)
-		return false, model.ROLE_USER
+		return model.ROLE_USER, err
 	}
 
 	q := db.Query{
@@ -33,12 +37,12 @@ func (r *chatParticipantRepo) GetUserRole(ctx context.Context, chatID, userID in
 	var role rmodel.Role
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&role)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return false, model.ROLE_USER
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.ROLE_USER, domainerrors.ErrCantDefineWhoDoesNotExistUserOrChat
 		}
-		log.Printf("failed to get user role (chatID=%d userID=%d): %v", chatID, userID, err)
-		return false, model.ROLE_USER
+
+		return model.ROLE_USER, err
 	}
 
-	return true, converter.FromRepoToModelRole(role)
+	return converter.FromRepoToModelRole(role), nil
 }

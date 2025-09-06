@@ -2,17 +2,15 @@ package message
 
 import (
 	"context"
-	"database/sql"
 	"errors"
-	"log"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/jackc/pgx/v4"
 )
 
 func (r *messageRepo) Get(ctx context.Context, messageID int64) (model.Message, error) {
@@ -42,11 +40,10 @@ func (r *messageRepo) Get(ctx context.Context, messageID int64) (model.Message, 
 		&rmsg.UpdatedAt,
 	)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return model.Message{}, status.Errorf(codes.NotFound, "message not found")
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.Message{}, domainerrors.ErrMessageNotFound
 		}
-		log.Printf("failed to get message %d: %v", messageID, err)
-		return model.Message{}, status.Errorf(codes.Internal, "failed to get message")
+		return model.Message{}, err
 	}
 
 	return converter.FromRepoToModelMessage(rmsg), nil

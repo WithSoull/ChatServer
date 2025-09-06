@@ -2,17 +2,15 @@ package chat
 
 import (
 	"context"
-	"database/sql"
 	"errors"
-	"log"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/jackc/pgx/v4"
 )
 
 func (r *chatRepo) Get(ctx context.Context, chatID int64) (model.Chat, error) {
@@ -33,20 +31,12 @@ func (r *chatRepo) Get(ctx context.Context, chatID int64) (model.Chat, error) {
 
 	var chat rmodel.Chat
 
-	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(
-		&chat.ID,
-		&chat.OwnerID,
-		&chat.Name,
-		&chat.Description,
-		&chat.CreatedAt,
-		&chat.UpdatedAt,
-	)
+	err = r.db.DB().ScanOneContext(ctx, &chat, q, args...)
 	if err != nil {
-		log.Printf("failed to get chat (id=%d): %v", chatID, err)
-		if errors.Is(err, sql.ErrNoRows) {
-			return model.Chat{}, status.Errorf(codes.NotFound, "chat not found")
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.Chat{}, domainerrors.ErrChatNotFound
 		}
-		return model.Chat{}, status.Errorf(codes.Internal, "failed to get chat")
+		return model.Chat{}, err
 	}
 
 	return converter.FromRepoToModelChat(chat, nil), nil

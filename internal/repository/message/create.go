@@ -2,15 +2,15 @@ package message
 
 import (
 	"context"
-	"log"
+	"errors"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/jackc/pgx/v4"
 )
 
 func (r *messageRepo) Create(ctx context.Context, msg model.Message) (int64, error) {
@@ -37,8 +37,10 @@ func (r *messageRepo) Create(ctx context.Context, msg model.Message) (int64, err
 
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&msgID)
 	if err != nil {
-		log.Printf("failed to create message in chat %d: %v", rmsg.ChatID, err)
-		return 0, status.Errorf(codes.Internal, "failed to create message")
+		if errors.Is(err, pgx.ErrNoRows) {
+			return 0, domainerrors.ErrMessageNotFound
+		}
+		return 0, err
 	}
 
 	return msgID, nil

@@ -2,12 +2,10 @@ package message
 
 import (
 	"context"
-	"log"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 )
 
 func (r *messageRepo) Delete(ctx context.Context, messageID int64) error {
@@ -27,12 +25,11 @@ func (r *messageRepo) Delete(ctx context.Context, messageID int64) error {
 
 	res, err := r.db.DB().ExecContext(ctx, q, args...)
 	if err != nil {
-		log.Printf("failed to delete message %d: %v", messageID, err)
-		return status.Errorf(codes.Internal, "failed to delete message")
+		return err
 	}
 
 	if res.RowsAffected() == 0 {
-		return status.Errorf(codes.NotFound, "message not found")
+		return domainerrors.ErrMessageNotFound
 	}
 
 	return nil

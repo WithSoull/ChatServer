@@ -2,15 +2,12 @@ package message
 
 import (
 	"context"
-	"log"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (r *messageRepo) GetByChat(ctx context.Context, chatID int64) ([]model.Message, error) {
@@ -32,8 +29,7 @@ func (r *messageRepo) GetByChat(ctx context.Context, chatID int64) ([]model.Mess
 
 	rows, err := r.db.DB().QueryContext(ctx, q, args...)
 	if err != nil {
-		log.Printf("failed to get messages from chat %d: %v", chatID, err)
-		return nil, status.Errorf(codes.Internal, "failed to get messages")
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -49,17 +45,13 @@ func (r *messageRepo) GetByChat(ctx context.Context, chatID int64) ([]model.Mess
 			&rmsg.SendAt,
 			&rmsg.UpdatedAt,
 		); err != nil {
-			log.Printf("failed to scan message from chat %d: %v", chatID, err)
-			return nil, status.Errorf(codes.Internal, "failed to get messages")
+			return nil, err
 		}
 		rmessages = append(rmessages, rmsg)
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Printf("iteration error while scanning messages from chat %d: %v", chatID, err)
-		return nil, status.Errorf(codes.Internal, "failed to get messages")
+		return nil, err
 	}
-	log.Printf("[Repository Layer - message] rmessages=%+v", rmessages)
-	log.Printf("[Repository Layer - message] messages=%+v", converter.FromRepoToModelMessages(rmessages))
 	return converter.FromRepoToModelMessages(rmessages), nil
 }

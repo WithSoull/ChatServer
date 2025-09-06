@@ -2,12 +2,14 @@ package chat_participant
 
 import (
 	"context"
-	"log"
+	"errors"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/jackc/pgconn"
 )
 
 func (r *chatParticipantRepo) AddUser(ctx context.Context, chatID, userID int64, role model.Role) error {
@@ -30,7 +32,17 @@ func (r *chatParticipantRepo) AddUser(ctx context.Context, chatID, userID int64,
 
 	_, err = r.db.DB().ExecContext(ctx, q, args...)
 	if err != nil {
-		log.Printf("failed to add user %d to chat %d: %v", userID, chatID, err)
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			switch pgErr.Code {
+			case "23505": // unique_violation
+				return domainerrors.ErrUserAlreadyInChat
+			case "23503": // foreign_key_violation
+				return domainerrors.ErrChatNotFound
+			case "23514": // check_violation
+				return domainerrors.ErrInvalidRole
+			}
+		}
 		return err
 	}
 

@@ -4,26 +4,21 @@ import (
 	"context"
 	"log"
 
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Service) DeleteChat(ctx context.Context, senderID, chatID int64) error {
-	_, err := s.chatRepo.Get(ctx, chatID)
-	if err != nil {
-		log.Printf("[Service Layer] Failed to get chat %d: %v", chatID, err)
-		return status.Errorf(codes.NotFound, "chat does not exist")
+	if _, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_OWNER); err != nil {
+		return err
 	}
 
-	ok, role := s.chatParticipantRepo.GetUserRole(ctx, chatID, senderID)
-	if ok && role == model.ROLE_OWNER {
-		if err := s.chatRepo.Delete(ctx, chatID); err != nil {
-			log.Printf("[Service Layer] Failed to delete chat %d: %v", chatID, err)
-			return status.Errorf(codes.Internal, "failed to delete chat")
+	if err := s.chatRepo.Delete(ctx, chatID); err != nil {
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("[Service Layer] failed to delete chat: %v", err)
 		}
-		return nil
+		return grpcErr
 	}
-
-	return status.Errorf(codes.PermissionDenied, "only owner of the chat can delete it")
+	return nil
 }

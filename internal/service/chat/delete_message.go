@@ -4,24 +4,39 @@ import (
 	"context"
 	"log"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
+	"github.com/WithSoull/ChatServer/internal/model"
 )
 
 func (s *Service) DeleteMessage(ctx context.Context, senderID, messageID int64) error {
-	msgSenderID, err := s.msgRepo.GetMessageSenderID(ctx, messageID)
+	msg, err := s.msgRepo.Get(ctx, messageID)
 	if err != nil {
-		log.Printf("failed to get sender for message %d: %v", messageID, err)
-		return status.Errorf(codes.NotFound, "message not found")
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("failed to get sender for message %d: %v", messageID, err)
+		}
+		return grpcErr
 	}
 
-	if msgSenderID != senderID {
-		return status.Errorf(codes.PermissionDenied, "only the sender of a message can delete it")
+	if msg.SenderID != senderID {
+		messageSenderRole, err := s.checkUserRole(ctx, msg.ChatID, msg.SenderID, model.ROLE_USER)
+		if err != nil {
+			return err
+		}
+
+		// We need to check that the role of request's sender is higher than
+		// the role of message's sender, thats why we increment neededRole while checking
+		if _, err := s.checkUserRole(ctx, msg.ChatID, senderID, messageSenderRole+1); err != nil {
+			return err
+		}
 	}
 
 	if err := s.msgRepo.Delete(ctx, messageID); err != nil {
-		log.Printf("failed to delete message %d: %v", messageID, err)
-		return status.Errorf(codes.Internal, "failed to delete message")
+		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
+		if isLogNeeded {
+			log.Printf("failed to delete message %d: %v", messageID, err)
+		}
+		return grpcErr
 	}
 
 	return nil

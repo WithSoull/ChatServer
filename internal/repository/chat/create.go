@@ -2,15 +2,12 @@ package chat
 
 import (
 	"context"
-	"log"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/WithSoull/ChatServer/internal/client/db"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (r *chatRepo) Create(ctx context.Context, chat model.Chat) (int64, error) {
@@ -35,10 +32,8 @@ func (r *chatRepo) Create(ctx context.Context, chat model.Chat) (int64, error) {
 	var chatID int64
 
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&chatID)
-
 	if err != nil {
-		log.Printf("[repo] failed to create chat: %v", err)
-		return 0, status.Errorf(codes.Internal, "failed to create chat")
+		return 0, err
 	}
 
 	return chatID, nil

@@ -8,17 +8,6 @@ import (
 )
 
 func (h *Handler) EditMessage(ctx context.Context, req *desc.EditMessageRequest) (*emptypb.Empty, error) {
-	var newText *string
-	if req.GetNewText() != nil {
-		newText = &req.GetNewText().Value
-	}
+	return &emptypb.Empty{}, h.service.EditMessage(ctx, req.GetSenderId(), req.GetMessageId(), req.GetNewText())
 
-	var newIsPinned *bool
-	if req.GetNewIsPinned() != nil {
-		newIsPinned = &req.GetNewIsPinned().Value
-	}
-
-	err := h.service.EditMessage(ctx, req.GetSenderId(), req.GetMessageId(), newText, newIsPinned)
-
-	return &emptypb.Empty{}, err
 }
