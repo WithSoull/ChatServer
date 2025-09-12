@@ -23,12 +23,21 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatV1Client interface {
+	// --------------------
+	// Chat Endpoints
+	// --------------------
 	CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*CreateChatResponse, error)
 	DeleteChat(ctx context.Context, in *DeleteChatRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetChat(ctx context.Context, in *GetChatRequest, opts ...grpc.CallOption) (*GetChatResponse, error)
+	// --------------------
+	// User Endpoints
+	// --------------------
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RemoveUser(ctx context.Context, in *RemoveUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// --------------------
+	// Message Endpoints
+	// --------------------
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	EditMessage(ctx context.Context, in *EditMessageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -137,12 +146,21 @@ func (c *chatV1Client) PinMessage(ctx context.Context, in *PinMessageRequest, op
 // All implementations must embed UnimplementedChatV1Server
 // for forward compatibility
 type ChatV1Server interface {
+	// --------------------
+	// Chat Endpoints
+	// --------------------
 	CreateChat(context.Context, *CreateChatRequest) (*CreateChatResponse, error)
 	DeleteChat(context.Context, *DeleteChatRequest) (*emptypb.Empty, error)
 	GetChat(context.Context, *GetChatRequest) (*GetChatResponse, error)
+	// --------------------
+	// User Endpoints
+	// --------------------
 	AddUser(context.Context, *AddUserRequest) (*emptypb.Empty, error)
 	RemoveUser(context.Context, *RemoveUserRequest) (*emptypb.Empty, error)
 	UpdateUserRole(context.Context, *UpdateUserRoleRequest) (*emptypb.Empty, error)
+	// --------------------
+	// Message Endpoints
+	// --------------------
 	SendMessage(context.Context, *SendMessageRequest) (*emptypb.Empty, error)
 	DeleteMessage(context.Context, *DeleteMessageRequest) (*emptypb.Empty, error)
 	EditMessage(context.Context, *EditMessageRequest) (*emptypb.Empty, error)

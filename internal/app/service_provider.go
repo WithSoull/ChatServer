@@ -21,8 +21,9 @@ import (
 )
 
 type serviceProvider struct {
-	pgConfig   config.PGCongif
-	grpcConfig config.GRPCCongif
+	pgConfig   config.PGConfig
+	grpcConfig config.GRPCConfig
+	httpConfig config.HTTPConfig
 
 	pgClient  db.Client
 	txManager db.TxManager
@@ -39,7 +40,7 @@ func newServiceProvider() *serviceProvider {
 	return &serviceProvider{}
 }
 
-func (s *serviceProvider) PGConfig() config.PGCongif {
+func (s *serviceProvider) PGConfig() config.PGConfig {
 	if s.pgConfig == nil {
 		cfg, err := env.NewPGConfig()
 		if err != nil {
@@ -51,7 +52,7 @@ func (s *serviceProvider) PGConfig() config.PGCongif {
 	return s.pgConfig
 }
 
-func (s *serviceProvider) GRPCConfig() config.GRPCCongif {
+func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfg, err := env.NewGRPCConfig()
 		if err != nil {
@@ -62,6 +63,19 @@ func (s *serviceProvider) GRPCConfig() config.GRPCCongif {
 	}
 
 	return s.grpcConfig
+}
+
+func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
+	if s.httpConfig == nil {
+		cfg, err := env.NewHTTPConfig()
+		if err != nil {
+			log.Fatalf("failed to get http config: %s", err.Error())
+		}
+
+		s.httpConfig = cfg
+	}
+
+	return s.httpConfig
 }
 
 func (s *serviceProvider) PGClient(ctx context.Context) db.Client {

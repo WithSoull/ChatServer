@@ -4,6 +4,7 @@ package chat_v1;
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/WithSoull/ChatServer/pkg/chat/v1;chat_v1";
 
@@ -11,18 +12,73 @@ option go_package = "github.com/WithSoull/ChatServer/pkg/chat/v1;chat_v1";
 // Service Definition
 // --------------------
 service ChatV1 {
-  rpc CreateChat(CreateChatRequest) returns (CreateChatResponse);
-  rpc DeleteChat(DeleteChatRequest) returns (google.protobuf.Empty);
-  rpc GetChat(GetChatRequest) returns (GetChatResponse);
+  // --------------------
+  // Chat Endpoints
+  // --------------------
+  rpc CreateChat(CreateChatRequest) returns (CreateChatResponse){
+    option (google.api.http) = {
+      post: "/chat/v1/chats"
+      body: "*" 
+    };
+  };
+  rpc DeleteChat(DeleteChatRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/chat/v1/chats/{chat_id}"
+    };
+  };
+  rpc GetChat(GetChatRequest) returns (GetChatResponse){
+    option (google.api.http) = {
+      get: "/chat/v1/chats/{chat_id}"
+    };
+  };
 
-  rpc AddUser(AddUserRequest) returns (google.protobuf.Empty);
-  rpc RemoveUser(RemoveUserRequest) returns (google.protobuf.Empty);
-  rpc UpdateUserRole(UpdateUserRoleRequest) returns (google.protobuf.Empty);
+  // --------------------
+  // User Endpoints
+  // --------------------
+  rpc AddUser(AddUserRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      post: "/chat/v1/chats/{chat_id}/users/{user_id}"
+      body: "*" 
+    };
+  };
+  rpc RemoveUser(RemoveUserRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/chat/v1/chats/{chat_id}/users/{user_id}"
+    };
+  };
+  rpc UpdateUserRole(UpdateUserRoleRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      patch: "/chat/v1/chats/{chat_id}/users/{user_id}"
+      body: "*" 
+    };
+  };
 
-  rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty);
-  rpc DeleteMessage(DeleteMessageRequest) returns (google.protobuf.Empty);
-  rpc EditMessage(EditMessageRequest) returns (google.protobuf.Empty);
-  rpc PinMessage(PinMessageRequest) returns (google.protobuf.Empty);
+  // --------------------
+  // Message Endpoints
+  // --------------------
+  rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      post: "/chat/v1/chats/{chat_id}/messages"
+      body: "*" 
+    };
+  };
+  rpc DeleteMessage(DeleteMessageRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      delete: "/chat/v1/messages/{message_id}"
+    };
+  };
+  rpc EditMessage(EditMessageRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      patch: "/chat/v1/messages/{message_id}"
+      body: "*" 
+    };
+  };
+  rpc PinMessage(PinMessageRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      patch: "/chat/v1/messages/{message_id}/pin"
+      body: "*" 
+    };
+  };
 }
 
 // --------------------

@@ -2,3 +2,4 @@
 /bin/
 .env
 .DS_Store
+/vendor.protogen/

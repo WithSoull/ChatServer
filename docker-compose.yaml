@@ -29,5 +29,6 @@ services:
     build: .
     ports:
       - "${GRPC_PORT}:${GRPC_PORT}"
+      - "${HTTP_PORT}:${HTTP_PORT}"
     restart: unless-stopped
     env_file: .env
