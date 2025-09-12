@@ -7,7 +7,7 @@ import (
 
 	"github.com/WithSoull/ChatServer/internal/client/db"
 	"github.com/WithSoull/ChatServer/internal/client/db/prettier"
-	"github.com/WithSoull/ChatServer/internal/contextx/txctx"
+	"github.com/WithSoull/platform_common/pkg/contextx/txctx"
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
