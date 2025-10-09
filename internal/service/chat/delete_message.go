@@ -2,20 +2,14 @@ package chat
 
 import (
 	"context"
-	"log"
 
-	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 )
 
 func (s *Service) DeleteMessage(ctx context.Context, senderID, messageID int64) error {
 	msg, err := s.msgRepo.Get(ctx, messageID)
 	if err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("failed to get sender for message %d: %v", messageID, err)
-		}
-		return grpcErr
+		return err
 	}
 
 	if msg.SenderID != senderID {
@@ -32,11 +26,7 @@ func (s *Service) DeleteMessage(ctx context.Context, senderID, messageID int64) 
 	}
 
 	if err := s.msgRepo.Delete(ctx, messageID); err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("failed to delete message %d: %v", messageID, err)
-		}
-		return grpcErr
+		return err
 	}
 
 	return nil

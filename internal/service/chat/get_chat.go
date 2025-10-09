@@ -2,9 +2,7 @@ package chat
 
 import (
 	"context"
-	"log"
 
-	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 )
 
@@ -15,30 +13,18 @@ func (s *Service) GetChat(ctx context.Context, senderID, chatID int64) (model.Ch
 
 	chat, err := s.chatRepo.Get(ctx, chatID)
 	if err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("[Service Layer] failed to get chat: %v", err)
-		}
-		return model.Chat{}, nil, grpcErr
+		return model.Chat{}, nil, err
 	}
 
 	chatParticipants, err := s.chatParticipantRepo.GetUsers(ctx, chatID)
 	if err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("[Service Layer] failed to get users of the chat: %v", err)
-		}
-		return model.Chat{}, nil, grpcErr
+		return model.Chat{}, nil, err
 	}
 	chat.ChatInfo.UserIDs = chatParticipants
 
 	msgs, err := s.msgRepo.GetByChat(ctx, chatID)
 	if err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("[Service Layer] failed to get messages of the chat: %v", err)
-		}
-		return model.Chat{}, nil, grpcErr
+		return model.Chat{}, nil, err
 	}
 
 	return chat, msgs, nil

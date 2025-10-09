@@ -10,7 +10,11 @@ import (
 
 	"github.com/WithSoull/ChatServer/internal/config"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
+
 	"github.com/WithSoull/platform_common/pkg/closer"
+	validationInterceptor "github.com/WithSoull/platform_common/pkg/middleware/validation"
+
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -105,7 +109,14 @@ func (a *App) initServiceProvider(_ context.Context) error {
 }
 
 func (a *App) initGRPCServer(ctx context.Context) error {
-	a.grpcServer = grpc.NewServer(grpc.Creds(insecure.NewCredentials()))
+	a.grpcServer = grpc.NewServer(
+		grpc.Creds(insecure.NewCredentials()),
+		grpc.UnaryInterceptor(
+			grpcMiddleware.ChainUnaryServer(
+				validationInterceptor.ErrorCodesInterceptor,
+			),
+		),
+	)
 
 	reflection.Register(a.grpcServer)
 

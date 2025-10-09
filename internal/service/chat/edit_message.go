@@ -2,30 +2,24 @@ package chat
 
 import (
 	"context"
-	"log"
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Service) EditMessage(ctx context.Context, senderID, messageID int64, newText string) error {
+	// Validation
 	if newText == "" {
-		return status.Error(codes.InvalidArgument, "no changes provided")
+		return domainerrors.ErrNoChangesProvided
 	}
 
 	msg, err := s.msgRepo.Get(ctx, messageID)
 	if err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("failed to get message %d: %v", messageID, err)
-		}
-		return grpcErr
+		return err
 	}
 
 	if senderID != msg.SenderID {
-		return status.Errorf(codes.PermissionDenied, "you can edit only your own messages")
+		return domainerrors.ErrCannotEditOthersMessages
 	}
 
 	if _, err := s.checkUserRole(ctx, msg.ChatID, senderID, model.ROLE_USER); err != nil {
@@ -35,11 +29,7 @@ func (s *Service) EditMessage(ctx context.Context, senderID, messageID int64, ne
 	msg.Text = newText
 
 	if err := s.msgRepo.Update(ctx, msg); err != nil {
-		isLogNeeded, grpcErr := domainerrors.ToGRPCStatus(err)
-		if isLogNeeded {
-			log.Printf("failed to update message %d: %v", messageID, err)
-		}
-		return grpcErr
+		return err
 	}
 
 	return nil
