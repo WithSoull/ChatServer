@@ -3,14 +3,18 @@ package chat
 import (
 	"context"
 
-	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/ChatServer/internal/validator"
+	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
 func (s *Service) SendMessage(ctx context.Context, senderID int64, chatID int64, text string) error {
 	// Validation
-	if text == "" {
-		return domainerrors.ErrEmptyMessageText
+	if err := validate.Validate(
+		ctx,
+		validator.ValidateNotEmptyMessege(text),
+	); err != nil {
+		return err
 	}
 
 	_, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_USER)

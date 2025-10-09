@@ -5,12 +5,17 @@ import (
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/ChatServer/internal/validator"
+	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
 func (s *Service) EditMessage(ctx context.Context, senderID, messageID int64, newText string) error {
 	// Validation
-	if newText == "" {
-		return domainerrors.ErrNoChangesProvided
+	if err := validate.Validate(
+		ctx,
+		validator.ValidateNoChangesProvided(newText),
+	); err != nil {
+		return err
 	}
 
 	msg, err := s.msgRepo.Get(ctx, messageID)

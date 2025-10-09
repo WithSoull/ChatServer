@@ -10,7 +10,6 @@ import (
 func (s *Service) CreateChat(ctx context.Context, senderID int64, chat_info model.ChatInfo) (int64, error) {
 	var chatID int64
 
-	// Validation
 	userSet := make(map[int64]struct{})
 	for _, id := range chat_info.UserIDs {
 		if _, exists := userSet[id]; exists {
