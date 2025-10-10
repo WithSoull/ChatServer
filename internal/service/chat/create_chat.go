@@ -54,7 +54,7 @@ func (s *Service) CreateChat(ctx context.Context, senderID int64, chat_info mode
 		return nil
 	})
 	if txErr != nil {
-		return 0, txErr
+		return 1, txErr
 	}
 	return chatID, nil
 }

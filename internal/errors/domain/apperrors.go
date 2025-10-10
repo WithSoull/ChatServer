@@ -3,6 +3,7 @@ package domainerrors
 import (
 	"github.com/WithSoull/platform_common/pkg/sys"
 	"github.com/WithSoull/platform_common/pkg/sys/codes"
+	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
 var (
@@ -26,10 +27,10 @@ var (
 	ErrCannotAssignOwnerRole      = sys.NewCommonError("cannot assign owner role to another member", codes.InvalidArgument)
 
 	// Validation errors (InvalidArgument)
-	ErrInvalidRole          = sys.NewCommonError("invalid role for participant", codes.InvalidArgument)
-	ErrDuplicateParticipant = sys.NewCommonError("each participant can only be added once", codes.InvalidArgument)
-	ErrNoChangesProvided    = sys.NewCommonError("no changes provided", codes.InvalidArgument)
-	ErrEmptyMessageText     = sys.NewCommonError("message text cannot be empty", codes.InvalidArgument)
+	ErrInvalidRole          = validate.NewValidationErrors("invalid role for participant")
+	ErrDuplicateParticipant = validate.NewValidationErrors("each participant can only be added once")
+	ErrNoChangesProvided    = validate.NewValidationErrors("no changes provided")
+	ErrEmptyMessageText     = validate.NewValidationErrors("message text cannot be empty")
 
 	// Conflict errors (AlreadyExists)
 	ErrUserAlreadyInChat = sys.NewCommonError("user is already in the chat", codes.AlreadyExists)
