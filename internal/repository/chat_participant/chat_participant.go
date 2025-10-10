@@ -1,8 +1,8 @@
 package chat_participant
 
 import (
-	"github.com/WithSoull/ChatServer/internal/client/db"
 	"github.com/WithSoull/ChatServer/internal/repository"
+	"github.com/WithSoull/platform_common/pkg/client/db"
 )
 
 const (

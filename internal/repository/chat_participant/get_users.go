@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/WithSoull/ChatServer/internal/client/db"
+	"github.com/WithSoull/platform_common/pkg/client/db"
 )
 
 func (r *chatParticipantRepo) GetUsers(ctx context.Context, chatID int64) ([]int64, error) {

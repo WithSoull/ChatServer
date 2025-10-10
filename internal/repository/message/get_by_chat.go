@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/WithSoull/ChatServer/internal/client/db"
+	"github.com/WithSoull/platform_common/pkg/client/db"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"

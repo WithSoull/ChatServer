@@ -7,6 +7,16 @@ github.com/WithSoull/platform_common v0.0.0-20251009203012-3621e0b798de h1:NFMG3
 github.com/WithSoull/platform_common v0.0.0-20251009203012-3621e0b798de/go.mod h1:/mWUNEcBKnlcFVFBBJ6g8FLFIiN1P2FWWyDI4Ded8NA=
 github.com/WithSoull/platform_common v0.0.0-20251009211251-dda11b8fb05d h1:T6za7DCegpvr8XfIvHG6Q1+GLtk4hwoX45PyP8j4b58=
 github.com/WithSoull/platform_common v0.0.0-20251009211251-dda11b8fb05d/go.mod h1:/mWUNEcBKnlcFVFBBJ6g8FLFIiN1P2FWWyDI4Ded8NA=
+github.com/WithSoull/platform_common v0.0.0-20251010131544-78445d56e545 h1:eVez5QLumBTpbc6ucxSrFxo7Vauf9rsxZyp8IYLzvcg=
+github.com/WithSoull/platform_common v0.0.0-20251010131544-78445d56e545/go.mod h1:/mWUNEcBKnlcFVFBBJ6g8FLFIiN1P2FWWyDI4Ded8NA=
+github.com/WithSoull/platform_common v0.0.0-20251010162304-5eb1ffdc8864 h1:9nCvDbJhguXurcxFpbUZsCBjXTBnSFl9kFDYVvPtyH0=
+github.com/WithSoull/platform_common v0.0.0-20251010162304-5eb1ffdc8864/go.mod h1:cHo07XgOdaur5WpI3Nc23xVoT9tcklINXQLsBsq5TXI=
+github.com/WithSoull/platform_common v0.0.0-20251010162612-985887bb0c4b h1:ZZPWoCOOBnmoS1+MXClvMrgwafvqKBNTdvVhwxBlwbk=
+github.com/WithSoull/platform_common v0.0.0-20251010162612-985887bb0c4b/go.mod h1:lvjqf+FVzz+IRHetrd6FS7R4cHWgNFVXSdz1HBv9m/U=
+github.com/WithSoull/platform_common v0.0.0-20251010162826-6c2a0f985c7d h1:Il80Pp0Xy5MuAjbkI5S+Gn7u8IjS++Z+zPuNwLhshzk=
+github.com/WithSoull/platform_common v0.0.0-20251010162826-6c2a0f985c7d/go.mod h1:lvjqf+FVzz+IRHetrd6FS7R4cHWgNFVXSdz1HBv9m/U=
+github.com/WithSoull/platform_common v0.0.0-20251010163558-6466e3a44b62 h1:LAC3Zz7xFI0aqEbuINcdtctv2VoTiS2R6f83AJZ1NQ0=
+github.com/WithSoull/platform_common v0.0.0-20251010163558-6466e3a44b62/go.mod h1:lvjqf+FVzz+IRHetrd6FS7R4cHWgNFVXSdz1HBv9m/U=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
@@ -58,6 +68,7 @@ github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 h1:UH//fgunKIs4JdUbpDl1VZCDa
 github.com/grpc-ecosystem/go-grpc-middleware v1.4.0/go.mod h1:g5qyo/la0ALbONm6Vbp88Yd8NsDy6rZz+RcrMPxvld8=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3 h1:NmZ1PKzSTQbuGHw9DGPFomqkkLWMC+vZCkfs+FHv1Vg=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3/go.mod h1:zQrxl1YP88HQlA6i9c63DSVPFklWpGX4OWAc9bFuaH4=
+github.com/jackc/chunkreader v1.0.0 h1:4s39bBR8ByfqH+DKm8rQA3E1LHZWB9XWcrz8fqaZbe0=
 github.com/jackc/chunkreader v1.0.0/go.mod h1:RT6O25fNZIuasFJRyZ4R/Y2BbhasbmZXF9QQ7T3kePo=
 github.com/jackc/chunkreader/v2 v2.0.0/go.mod h1:odVSm741yZoC3dpHEUXIqA9tQRhFrgOHwnPIn9lDKlk=
 github.com/jackc/chunkreader/v2 v2.0.1 h1:i+RDz65UE+mmpjTfyz0MoVTnzeYxroil2G82ki7MGG8=
@@ -81,6 +92,7 @@ github.com/jackc/pgmock v0.0.0-20210724152146-4ad1a8207f65 h1:DadwsjnMwFjfWc9y5W
 github.com/jackc/pgmock v0.0.0-20210724152146-4ad1a8207f65/go.mod h1:5R2h2EEX+qri8jOWMbJCtaPWkrrNc7OHwsp2TCqp7ak=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
+github.com/jackc/pgproto3 v1.1.0 h1:FYYE4yRw+AgI8wXIinMlNjBbp/UitDJwfj5LqqewP1A=
 github.com/jackc/pgproto3 v1.1.0/go.mod h1:eR5FA3leWg7p9aeAqi37XOTgTIbkABlvcPB3E5rlc78=
 github.com/jackc/pgproto3/v2 v2.0.0-alpha1.0.20190420180111-c116219b62db/go.mod h1:bhq50y+xrl9n5mRYyCBFKkpRVTLYJVWeCc+mEAI3yXA=
 github.com/jackc/pgproto3/v2 v2.0.0-alpha1.0.20190609003834-432c2951c711/go.mod h1:uH0AWtUmuShn0bcesswc4aBTWGvw0cAxIJp+6OB//Wg=
@@ -360,6 +372,8 @@ google.golang.org/grpc v1.27.0/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8
 google.golang.org/grpc v1.29.1/go.mod h1:itym6AZVZYACWQqET3MqgPpjcuV5QH3BxFS3IjizoKk=
 google.golang.org/grpc v1.76.0 h1:UnVkv1+uMLYXoIz6o7chp59WfQUYA2ex/BXQ9rHZu7A=
 google.golang.org/grpc v1.76.0/go.mod h1:Ju12QI8M6iQJtbcsV+awF5a4hfJMLi4X0JLo94ULZ6c=
+google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 h1:F29+wU6Ee6qgu9TddPgooOdaqsxTMunOoj8KA5yuS5A=
+google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1/go.mod h1:5KF+wpkbTSbGcR9zteSqZV6fqFOWBl4Yde8En8MryZA=
 google.golang.org/protobuf v1.36.10 h1:AYd7cD/uASjIL6Q9LiTjz8JLcrh/88q5UObnmY3aOOE=
 google.golang.org/protobuf v1.36.10/go.mod h1:HTf+CrKn2C3g5S8VImy6tdcUvCska2kB7j23XfzDpco=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=

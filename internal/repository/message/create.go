@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/WithSoull/ChatServer/internal/client/db"
+	"github.com/WithSoull/platform_common/pkg/client/db"
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"

@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
-	github.com/WithSoull/platform_common v0.0.0-20251009211251-dda11b8fb05d
+	github.com/WithSoull/platform_common v0.0.0-20251010163558-6466e3a44b62
 	github.com/georgysavva/scany v1.2.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
@@ -34,4 +34,5 @@ require (
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251007200510-49b9836ed3ff // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 // indirect
 )

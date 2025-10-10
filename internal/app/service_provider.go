@@ -4,9 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/WithSoull/ChatServer/internal/client/db"
-	"github.com/WithSoull/ChatServer/internal/client/db/pg"
-	"github.com/WithSoull/ChatServer/internal/client/db/transaction"
 	"github.com/WithSoull/ChatServer/internal/config"
 	"github.com/WithSoull/ChatServer/internal/config/env"
 	chatHandler "github.com/WithSoull/ChatServer/internal/handler/chat"
@@ -17,6 +14,9 @@ import (
 	"github.com/WithSoull/ChatServer/internal/service"
 	chatService "github.com/WithSoull/ChatServer/internal/service/chat"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
+	"github.com/WithSoull/platform_common/pkg/client/db"
+	"github.com/WithSoull/platform_common/pkg/client/db/pg"
+	"github.com/WithSoull/platform_common/pkg/client/db/transaction"
 	"github.com/WithSoull/platform_common/pkg/closer"
 )
 
