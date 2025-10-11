@@ -2,10 +2,8 @@ package app
 
 import (
 	"context"
-	"log"
 
 	"github.com/WithSoull/ChatServer/internal/config"
-	"github.com/WithSoull/ChatServer/internal/config/env"
 	chatHandler "github.com/WithSoull/ChatServer/internal/handler/chat"
 	"github.com/WithSoull/ChatServer/internal/repository"
 	chatRepository "github.com/WithSoull/ChatServer/internal/repository/chat"
@@ -21,10 +19,6 @@ import (
 )
 
 type serviceProvider struct {
-	pgConfig   config.PGConfig
-	grpcConfig config.GRPCConfig
-	httpConfig config.HTTPConfig
-
 	pgClient  db.Client
 	txManager db.TxManager
 
@@ -40,58 +34,19 @@ func newServiceProvider() *serviceProvider {
 	return &serviceProvider{}
 }
 
-func (s *serviceProvider) PGConfig() config.PGConfig {
-	if s.pgConfig == nil {
-		cfg, err := env.NewPGConfig()
-		if err != nil {
-			log.Fatalf("failed to get pg config: %s", err.Error())
-		}
-
-		s.pgConfig = cfg
-	}
-	return s.pgConfig
-}
-
-func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
-	if s.grpcConfig == nil {
-		cfg, err := env.NewGRPCConfig()
-		if err != nil {
-			log.Fatalf("failed to get grpc config: %s", err.Error())
-		}
-
-		s.grpcConfig = cfg
-	}
-
-	return s.grpcConfig
-}
-
-func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
-	if s.httpConfig == nil {
-		cfg, err := env.NewHTTPConfig()
-		if err != nil {
-			log.Fatalf("failed to get http config: %s", err.Error())
-		}
-
-		s.httpConfig = cfg
-	}
-
-	return s.httpConfig
-}
-
 func (s *serviceProvider) PGClient(ctx context.Context) db.Client {
 	if s.pgClient == nil {
-		client, err := pg.NewPGClient(ctx, s.PGConfig().DSN())
+		client, err := pg.NewPGClient(ctx, config.AppConfig().PG.DSN())
 		if err != nil {
-			log.Fatalf("failed to create connection pool: %s", err.Error())
+			panic(err)
 		}
 
 		if err := client.DB().Ping(ctx); err != nil {
-			log.Fatalf("failed to connect to database: %v", err.Error())
+			panic(err)
 		}
 
-		closer.Add(func() error {
-			client.Close()
-			return nil
+		closer.AddNamed("PGClient", func(ctx context.Context) error {
+			return client.Close()
 		})
 
 		s.pgClient = client
