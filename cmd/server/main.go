@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/WithSoull/ChatServer/internal/app"
 	"github.com/WithSoull/platform_common/pkg/logger"
@@ -13,7 +14,7 @@ func main() {
 
 	a, err := app.NewApp(appCtx)
 	if err != nil {
-		logger.Fatal(appCtx, "failed to init app", zap.Error(err))
+		panic(fmt.Sprintf("failed to init app with error: %v", err))
 	}
 
 	if err := a.Run(); err != nil {
