@@ -1,58 +1,52 @@
 package env
 
 import (
-	"errors"
 	"fmt"
-	"os"
 
-	"github.com/WithSoull/ChatServer/internal/config"
+	"github.com/caarlos0/env/v11"
 )
 
-const (
-	dsnEnvName      = "PG_DSN"
-	hostEnvName     = "PG_HOST"
-	portEnvName     = "PG_PORT_INNER"
-	dbEnvName       = "PG_DATABASE_NAME"
-	userEnvName     = "PG_USER"
-	passwordEnvName = "PG_PASSWORD"
-	sslModeEnvName  = "PG_SSL_MODE"
-)
+type pgEnvConfig struct {
+	DSN      string `env:"PG_DSN"`
+	Host     string `env:"PG_HOST"`
+	Port     string `env:"PG_PORT_INNER"`
+	Database string `env:"PG_DATABASE_NAME"`
+	User     string `env:"PG_USER"`
+	Password string `env:"PG_PASSWORD"`
+	SSLMode  string `env:"PG_SSL_MODE" envDefault:"disable"`
+}
 
 type pgConfig struct {
+	raw pgEnvConfig
 	dsn string
 }
 
-func NewPGConfig() (config.PGConfig, error) {
-	dsn := os.Getenv(dsnEnvName)
-	if len(dsn) == 0 {
-		host := os.Getenv(hostEnvName)
-		port := os.Getenv(portEnvName)
-		dbname := os.Getenv(dbEnvName)
-		user := os.Getenv(userEnvName)
-		password := os.Getenv(passwordEnvName)
-		sslmode := os.Getenv(sslModeEnvName)
-
-		if len(host) == 0 ||
-			len(port) == 0 ||
-			len(dbname) == 0 ||
-			len(user) == 0 ||
-			len(password) == 0 {
-			return nil, errors.New("missing required environment variables for database connection (Tip: you can just define *PG_DSN in environment)")
-		}
-
-		if len(sslmode) == 0 {
-			sslmode = "disable"
-		}
-
-		dsn = fmt.Sprintf(
-			"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
-			host, port, dbname, user, password, sslmode,
-		)
+func NewPGConfig() (*pgConfig, error) {
+	var raw pgEnvConfig
+	if err := env.Parse(&raw); err != nil {
+		return nil, err
 	}
 
-	return &pgConfig{
-		dsn: dsn,
-	}, nil
+	cfg := &pgConfig{raw: raw}
+
+	// Use direct DSN if provided
+	if raw.DSN != "" {
+		cfg.dsn = raw.DSN
+		return cfg, nil
+	}
+
+	// Build DSN from individual components
+	if raw.Host == "" || raw.Port == "" || raw.Database == "" ||
+		raw.User == "" || raw.Password == "" {
+		return nil, fmt.Errorf("missing required environment variables for database connection (Tip: you can just define PG_DSN in environment)")
+	}
+
+	cfg.dsn = fmt.Sprintf(
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
+		raw.Host, raw.Port, raw.Database, raw.User, raw.Password, raw.SSLMode,
+	)
+
+	return cfg, nil
 }
 
 func (cfg *pgConfig) DSN() string {

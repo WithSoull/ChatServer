@@ -1,41 +1,29 @@
 package env
 
 import (
-	"errors"
 	"net"
-	"os"
 
-	"github.com/WithSoull/ChatServer/internal/config"
+	"github.com/caarlos0/env/v11"
 )
 
-const (
-	httpHostEnvName = "HTTP_HOST"
-	httpPortEnvName = "HTTP_PORT"
-)
-
-type httpConfig struct {
-	host string
-	port string
+type httpEnvConfig struct {
+	Host string `env:"HTTP_HOST,required"`
+	Port string `env:"HTTP_PORT,required"`
 }
 
-func NewHTTPConfig() (config.HTTPConfig, error) {
-	host := os.Getenv(httpHostEnvName)
-	if len(host) == 0 {
-		return nil, errors.New("http host not found")
+type httpConfig struct {
+	raw httpEnvConfig
+}
+
+func NewHTTPConfig() (*httpConfig, error) {
+	var raw httpEnvConfig
+	if err := env.Parse(&raw); err != nil {
+		return nil, err
 	}
 
-	port := os.Getenv(httpPortEnvName)
-	if len(port) == 0 {
-		return nil, errors.New("http port not found")
-	}
-
-	return &httpConfig{
-		host: host,
-		port: port,
-	}, nil
+	return &httpConfig{raw: raw}, nil
 }
 
 func (cfg *httpConfig) Address() string {
-	address := net.JoinHostPort(cfg.host, cfg.port)
-	return address
+	return net.JoinHostPort(cfg.raw.Host, cfg.raw.Port)
 }

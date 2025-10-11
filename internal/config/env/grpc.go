@@ -1,41 +1,29 @@
 package env
 
 import (
-	"errors"
 	"net"
-	"os"
 
-	"github.com/WithSoull/ChatServer/internal/config"
+	"github.com/caarlos0/env/v11"
 )
 
-const (
-	grpcHostEnvName = "GRPC_HOST"
-	grpcPortEnvName = "GRPC_PORT"
-)
-
-type grpcConfig struct {
-	host string
-	port string
+type grpcEnvConfig struct {
+	Host string `env:"GRPC_HOST,required"`
+	Port string `env:"GRPC_PORT,required"`
 }
 
-func NewGRPCConfig() (config.GRPCConfig, error) {
-	host := os.Getenv(grpcHostEnvName)
-	if len(host) == 0 {
-		return nil, errors.New("grpc host not found")
+type grpcConfig struct {
+	raw grpcEnvConfig
+}
+
+func NewGRPCConfig() (*grpcConfig, error) {
+	var raw grpcEnvConfig
+	if err := env.Parse(&raw); err != nil {
+		return nil, err
 	}
 
-	port := os.Getenv(grpcPortEnvName)
-	if len(port) == 0 {
-		return nil, errors.New("grpc port not found")
-	}
-
-	return &grpcConfig{
-		host: host,
-		port: port,
-	}, nil
+	return &grpcConfig{raw: raw}, nil
 }
 
 func (cfg *grpcConfig) Address() string {
-	address := net.JoinHostPort(cfg.host, cfg.port)
-	return address
+	return net.JoinHostPort(cfg.raw.Host, cfg.raw.Port)
 }

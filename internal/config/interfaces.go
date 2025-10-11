@@ -1,0 +1,18 @@
+package config
+
+type GRPCConfig interface {
+	Address() string
+}
+
+type HTTPConfig interface {
+	Address() string
+}
+
+type PGConfig interface {
+	DSN() string
+}
+
+type LoggerConfig interface {
+	LogLevel() string
+	AsJSON() bool
+}
