@@ -20,6 +20,7 @@ get-deps:
 	go get -u github.com/jackc/pgx/v4
 	go get -u golang.org/x/crypto
 	go get -u github.com/joho/godotenv
+	go get -u github.com/caarlos0/env/v11
 	go get -u github.com/lib/pq
 
 	go get -u github.com/grpc-ecosystem/grpc-gateway/v2/runtime

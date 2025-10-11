@@ -1,5 +1,3 @@
-version: '3'
-
 volumes:
   postgres_volume_chat_server:
 
@@ -14,6 +12,12 @@ services:
       - "${PG_PORT_OUTER}:${PG_PORT_INNER}"
     volumes:
       - postgres_volume_chat_server:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE_NAME} -h 127.0.0.1 || exit 1"]
+      interval: 2s
+      timeout: 1s
+      retries: 15
+      start_period: 5s
        
   migrator:
     build:
@@ -24,6 +28,9 @@ services:
     environment:
         DB_HOST: pg-chat
     env_file: .env
+    depends_on:
+      pg-chat:
+        condition: service_healthy
 
   chat-server:
     build: .
@@ -32,3 +39,8 @@ services:
       - "${HTTP_PORT}:${HTTP_PORT}"
     restart: unless-stopped
     env_file: .env
+    depends_on:
+      pg-chat:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully

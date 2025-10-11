@@ -2,20 +2,21 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"github.com/WithSoull/ChatServer/internal/app"
+	"github.com/WithSoull/platform_common/pkg/logger"
+	"go.uber.org/zap"
 )
 
 func main() {
-	ctx := context.Background()
+	appCtx := context.Background()
 
-	a, err := app.NewApp(ctx)
+	a, err := app.NewApp(appCtx)
 	if err != nil {
-		log.Fatalf("failed to init app: %s", err.Error())
+		logger.Fatal(appCtx, "failed to init app", zap.Error(err))
 	}
 
 	if err := a.Run(); err != nil {
-		log.Fatalf("failed to run app: %s", err.Error())
+		logger.Fatal(appCtx, "failed to run app", zap.Error(err))
 	}
 }
