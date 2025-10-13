@@ -100,7 +100,7 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 		grpc.Creds(insecure.NewCredentials()),
 		grpc.UnaryInterceptor(
 			grpcMiddleware.ChainUnaryServer(
-				validationInterceptor.ErrorCodesInterceptor,
+				validationInterceptor.ErrorCodesInterceptor(logger.Logger()),
 			),
 		),
 	)

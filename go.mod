@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	github.com/WithSoull/platform_common v0.0.0-20251011124932-58ae027709d5 // indirect
+	github.com/WithSoull/platform_common v1.0.0 // indirect
 	github.com/georgysavva/scany v1.2.3 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -37,4 +37,5 @@ require (
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251007200510-49b9836ed3ff // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 // indirect
 )

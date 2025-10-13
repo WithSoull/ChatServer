@@ -3,10 +3,10 @@ package chat
 import (
 	"context"
 	"errors"
-	"log"
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/platform_common/pkg/logger"
 )
 
 func (s *Service) UpdateUserRole(ctx context.Context, senderID, chatID, userID int64, newRole model.Role) error {
@@ -55,7 +55,7 @@ func (s *Service) checkUserRole(ctx context.Context, chatID, userID int64, neede
 	if senderRole < neededRole {
 		switch neededRole {
 		case model.ROLE_USER:
-			log.Print("[Service Layer] send sender role < needed role")
+			logger.Error(ctx, "send sender role < needed role")
 			return model.ROLE_USER, domainerrors.ErrFailedToCheckRole
 		case model.ROLE_ADMIN:
 			return model.ROLE_USER, domainerrors.ErrOnlyAdminsAllowed
