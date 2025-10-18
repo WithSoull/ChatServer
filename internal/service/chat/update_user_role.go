@@ -7,6 +7,7 @@ import (
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/platform_common/pkg/logger"
+	"github.com/WithSoull/platform_common/pkg/tracing"
 )
 
 func (s *Service) UpdateUserRole(ctx context.Context, senderID, chatID, userID int64, newRole model.Role) error {
@@ -40,6 +41,9 @@ func (s *Service) UpdateUserRole(ctx context.Context, senderID, chatID, userID i
 }
 
 func (s *Service) checkUserRole(ctx context.Context, chatID, userID int64, neededRole model.Role) (model.Role, error) {
+	ctx, span := tracing.StartSpan(ctx, "repo:chat_participants:checkUserRole")
+	defer span.End()
+
 	senderRole, err := s.chatParticipantRepo.GetUserRole(ctx, chatID, userID)
 	if err != nil {
 		if errors.Is(err, domainerrors.ErrCantDefineWhoDoesNotExistUserOrChat) {

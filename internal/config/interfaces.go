@@ -16,3 +16,10 @@ type LoggerConfig interface {
 	LogLevel() string
 	AsJSON() bool
 }
+
+type TracingConfig interface {
+	CollectorEndpoint() string
+	ServiceName() string
+	Environment() string
+	ServiceVersion() string
+}

@@ -13,6 +13,7 @@ import (
 	"github.com/WithSoull/ChatServer/internal/config"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
 	"github.com/WithSoull/platform_common/pkg/closer"
+	"github.com/WithSoull/platform_common/pkg/tracing"
 	"go.uber.org/zap"
 
 	"github.com/WithSoull/platform_common/pkg/logger"
@@ -60,6 +61,7 @@ func (a *App) initDeps(ctx context.Context) error {
 		a.initServiceProvider,
 		a.initGRPCServer,
 		a.initHTTPServer,
+		a.initTracing,
 	}
 
 	for _, f := range inits {
@@ -101,6 +103,7 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 		grpc.UnaryInterceptor(
 			grpcMiddleware.ChainUnaryServer(
 				validationInterceptor.ErrorCodesInterceptor(logger.Logger()),
+				tracing.UnaryServerInterceptor(config.AppConfig().Tracing.ServiceName()),
 			),
 		),
 	)
@@ -137,6 +140,17 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 	closer.AddNamed("HTTP server", func(ctx context.Context) error {
 		return a.httpServer.Shutdown(ctx)
 	})
+
+	return nil
+}
+
+func (a *App) initTracing(ctx context.Context) error {
+	err := tracing.InitTracer(ctx, config.AppConfig().Tracing)
+	if err != nil {
+		return err
+	}
+
+	closer.AddNamed("tracer", tracing.ShutdownTracer)
 
 	return nil
 }
