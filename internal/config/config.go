@@ -17,6 +17,7 @@ type config struct {
 	HTTP    HTTPConfig
 	PG      PGConfig
 	Tracing TracingConfig
+	Metrics MetricsConfig
 }
 
 // Load reads environment variables from .env file(s) and initializes the application configuration.
@@ -53,12 +54,18 @@ func Load(path ...string) error {
 		return err
 	}
 
+	metricsCfg, err := env.NewMetricsConfig()
+	if err != nil {
+		return err
+	}
+
 	appConfig = &config{
 		Logger:  loggerCfg,
 		GRPC:    grpcCfg,
 		HTTP:    httpCfg,
 		PG:      pgCfg,
 		Tracing: tracingCfg,
+		Metrics: metricsCfg,
 	}
 
 	return nil

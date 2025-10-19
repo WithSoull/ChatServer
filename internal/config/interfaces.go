@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type GRPCConfig interface {
 	Address() string
 }
@@ -26,4 +28,12 @@ type TracingConfig interface {
 	ServiceName() string
 	Environment() string
 	ServiceVersion() string
+}
+
+type MetricsConfig interface {
+	ServiceName() string
+	ServiceVersion() string
+	OTLPEndpoint() string
+	ServiceEnvironment() string
+	PushTimeout() time.Duration
 }

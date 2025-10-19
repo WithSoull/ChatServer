@@ -13,10 +13,12 @@ import (
 	"github.com/WithSoull/ChatServer/internal/config"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
 	"github.com/WithSoull/platform_common/pkg/closer"
+	"github.com/WithSoull/platform_common/pkg/metric"
 	"github.com/WithSoull/platform_common/pkg/tracing"
 	"go.uber.org/zap"
 
 	"github.com/WithSoull/platform_common/pkg/logger"
+	metricsInterceptor "github.com/WithSoull/platform_common/pkg/middleware/metrics"
 	validationInterceptor "github.com/WithSoull/platform_common/pkg/middleware/validation"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -59,6 +61,7 @@ func (a *App) initDeps(ctx context.Context) error {
 		a.initLogger,
 		a.initCloser,
 		a.initServiceProvider,
+		a.initMetrics,
 		a.initGRPCServer,
 		a.initHTTPServer,
 		a.initTracing,
@@ -97,11 +100,27 @@ func (a *App) initServiceProvider(_ context.Context) error {
 	return nil
 }
 
+func (a *App) initMetrics(ctx context.Context) error {
+	meterProvider, err := metric.InitOTELMetrics(config.AppConfig().Metrics)
+	if err != nil {
+		logger.Error(ctx, "failed to create meter provider", zap.Error(err))
+	}
+
+	closer.AddNamed("OTEL Metrics", meterProvider.Shutdown)
+
+	if err := metric.Init(ctx, config.AppConfig().Metrics); err != nil {
+		logger.Error(ctx, "failed to init metrics", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
 func (a *App) initGRPCServer(ctx context.Context) error {
 	a.grpcServer = grpc.NewServer(
 		grpc.Creds(insecure.NewCredentials()),
 		grpc.UnaryInterceptor(
 			grpcMiddleware.ChainUnaryServer(
+				metricsInterceptor.MetricsInterceptor,
 				validationInterceptor.ErrorCodesInterceptor(logger.Logger()),
 				tracing.UnaryServerInterceptor(config.AppConfig().Tracing.ServiceName()),
 			),
