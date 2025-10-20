@@ -5,10 +5,19 @@ import (
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/ChatServer/internal/validator"
+	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
 func (s *Service) CreateChat(ctx context.Context, senderID int64, chat_info model.ChatInfo) (int64, error) {
 	var chatID int64
+
+	if err := validate.Validate(
+		ctx,
+		validator.ValidateEmptyName(chat_info.Name),
+	); err != nil {
+		return 0, err
+	}
 
 	userSet := make(map[int64]struct{})
 	for _, id := range chat_info.UserIDs {

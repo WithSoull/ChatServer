@@ -17,6 +17,16 @@ func ValidateNotEmptyMessege(text string) validate.Condition {
 	}
 }
 
+func ValidateEmptyName(name string) validate.Condition {
+	return func(ctx context.Context) error {
+		if name == "" {
+			return domainerrors.ErrEmptyChatName
+		}
+
+		return nil
+	}
+}
+
 func ValidateNoChangesProvided(text string) validate.Condition {
 	return func(ctx context.Context) error {
 		if text == "" {

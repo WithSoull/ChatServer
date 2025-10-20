@@ -30,6 +30,7 @@ var (
 	ErrInvalidRole          = validate.NewValidationErrors("invalid role for participant")
 	ErrDuplicateParticipant = validate.NewValidationErrors("each participant can only be added once")
 	ErrNoChangesProvided    = validate.NewValidationErrors("no changes provided")
+	ErrEmptyChatName        = validate.NewValidationErrors("name of the chat cannot be empty")
 	ErrEmptyMessageText     = validate.NewValidationErrors("message text cannot be empty")
 
 	// Conflict errors (AlreadyExists)
