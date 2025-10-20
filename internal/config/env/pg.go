@@ -2,18 +2,20 @@ package env
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/caarlos0/env/v11"
 )
 
 type pgEnvConfig struct {
-	DSN      string `env:"PG_DSN"`
-	Host     string `env:"PG_HOST"`
-	Port     string `env:"PG_PORT_INNER"`
-	Database string `env:"PG_DATABASE_NAME"`
-	User     string `env:"PG_USER"`
-	Password string `env:"PG_PASSWORD"`
-	SSLMode  string `env:"PG_SSL_MODE" envDefault:"disable"`
+	DSN      string        `env:"PG_DSN"`
+	Host     string        `env:"PG_HOST"`
+	Port     string        `env:"PG_PORT_INNER"`
+	Database string        `env:"PG_DATABASE_NAME"`
+	User     string        `env:"PG_USER"`
+	Password string        `env:"PG_PASSWORD"`
+	SSLMode  string        `env:"PG_SSL_MODE" envDefault:"disable"`
+	Timeout  time.Duration `env:"PG_TIMEOUT" envDefault:"5s"`
 }
 
 type pgConfig struct {
@@ -51,4 +53,8 @@ func NewPGConfig() (*pgConfig, error) {
 
 func (cfg *pgConfig) DSN() string {
 	return cfg.dsn
+}
+
+func (cfg *pgConfig) Timeout() time.Duration {
+	return cfg.raw.Timeout
 }

@@ -12,6 +12,7 @@ type HTTPConfig interface {
 
 type PGConfig interface {
 	DSN() string
+	Timeout() time.Duration
 }
 
 type LoggerConfig interface {

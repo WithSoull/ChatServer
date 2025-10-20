@@ -37,7 +37,7 @@ func newServiceProvider() *serviceProvider {
 
 func (s *serviceProvider) PGClient(ctx context.Context) db.Client {
 	if s.pgClient == nil {
-		client, err := pg.NewPGClient(ctx, config.AppConfig().PG.DSN(), logger.Logger())
+		client, err := pg.NewPGClient(ctx, logger.Logger(), config.AppConfig().PG)
 		if err != nil {
 			panic(err)
 		}
