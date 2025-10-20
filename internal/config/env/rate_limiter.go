@@ -1,6 +1,7 @@
 package env
 
 import (
+	"errors"
 	"time"
 
 	"github.com/caarlos0/env/v11"
@@ -19,6 +20,10 @@ func NewRateLimiterConfig() (*rateLimiterConfig, error) {
 	var raw rateLimiterEnvConfig
 	if err := env.Parse(&raw); err != nil {
 		return nil, err
+	}
+
+	if raw.Limit < 1 || raw.Period < time.Nanosecond {
+		return nil, errors.New("invalid rate limiter settings")
 	}
 
 	return &rateLimiterConfig{raw: raw}, nil
