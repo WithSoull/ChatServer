@@ -38,3 +38,8 @@ type MetricsConfig interface {
 	ServiceEnvironment() string
 	PushTimeout() time.Duration
 }
+
+type RateLimiterConfig interface {
+	Limit() int64
+	Period() time.Duration
+}

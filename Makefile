@@ -77,6 +77,18 @@ vendor-proto:
 			rm -rf vendor.protogen/openapiv2 ;\
 		fi
 
+grpc-load-test:
+	ghz \
+		--proto api/chat/v1/chat.proto \
+		--call chat_v1.ChatV1.GetChat \
+		--data '{"chat_id": "2","sender_id": "1"}' \
+		--rps 1500 \
+		--total 15000 \
+		--timeout 10s \
+		--insecure \
+		-i ./vendor.protogen \
+		localhost:$(GRPC_PORT)
+
 rebuild:
 	docker compose down
 	docker compose build --no-cache

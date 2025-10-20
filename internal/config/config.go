@@ -12,12 +12,13 @@ var appConfig *config
 
 // config represents the complete application configuration.
 type config struct {
-	Logger  LoggerConfig
-	GRPC    GRPCConfig
-	HTTP    HTTPConfig
-	PG      PGConfig
-	Tracing TracingConfig
-	Metrics MetricsConfig
+	Logger      LoggerConfig
+	GRPC        GRPCConfig
+	HTTP        HTTPConfig
+	PG          PGConfig
+	Tracing     TracingConfig
+	Metrics     MetricsConfig
+	RateLimiter RateLimiterConfig
 }
 
 // Load reads environment variables from .env file(s) and initializes the application configuration.
@@ -58,14 +59,19 @@ func Load(path ...string) error {
 	if err != nil {
 		return err
 	}
+	rateLimiterCfg, err := env.NewRateLimiterConfig()
+	if err != nil {
+		return err
+	}
 
 	appConfig = &config{
-		Logger:  loggerCfg,
-		GRPC:    grpcCfg,
-		HTTP:    httpCfg,
-		PG:      pgCfg,
-		Tracing: tracingCfg,
-		Metrics: metricsCfg,
+		Logger:      loggerCfg,
+		GRPC:        grpcCfg,
+		HTTP:        httpCfg,
+		PG:          pgCfg,
+		Tracing:     tracingCfg,
+		Metrics:     metricsCfg,
+		RateLimiter: rateLimiterCfg,
 	}
 
 	return nil
