@@ -59,6 +59,7 @@ func Load(path ...string) error {
 	if err != nil {
 		return err
 	}
+
 	rateLimiterCfg, err := env.NewRateLimiterConfig()
 	if err != nil {
 		return err
