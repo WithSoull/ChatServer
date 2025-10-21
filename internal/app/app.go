@@ -19,7 +19,7 @@ import (
 
 	"github.com/WithSoull/platform_common/pkg/logger"
 	metricsInterceptor "github.com/WithSoull/platform_common/pkg/middleware/metrics"
-	rateLimiterInterceptor "github.com/WithSoull/platform_common/pkg/middleware/rate-limiter"
+	rateLimiterInterceptor "github.com/WithSoull/platform_common/pkg/middleware/ratelimiter"
 	validationInterceptor "github.com/WithSoull/platform_common/pkg/middleware/validation"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
