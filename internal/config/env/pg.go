@@ -16,6 +16,7 @@ type pgEnvConfig struct {
 	Password string        `env:"PG_PASSWORD"`
 	SSLMode  string        `env:"PG_SSL_MODE" envDefault:"disable"`
 	Timeout  time.Duration `env:"PG_TIMEOUT" envDefault:"5s"`
+	NeedLog  bool          `env:"PG_LOGGING" envDefault:"false"`
 }
 
 type pgConfig struct {
@@ -57,4 +58,8 @@ func (cfg *pgConfig) DSN() string {
 
 func (cfg *pgConfig) Timeout() time.Duration {
 	return cfg.raw.Timeout
+}
+
+func (cfg *pgConfig) NeedLog() bool {
+	return cfg.raw.NeedLog
 }

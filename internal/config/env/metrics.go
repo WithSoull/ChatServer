@@ -7,8 +7,8 @@ import (
 )
 
 type metricsEnvConfig struct {
-	ServiceName        string        `env:"OTEL_SERVICE_NAME,required"`
-	ServiceVersion     string        `env:"OTEL_SERVICE_VERSION,required"`
+	ServiceName        string        `env:"SERVICE_NAME,required"`
+	ServiceVersion     string        `env:"SERVICE_VERSION,required"`
 	ServiceEnvironment string        `env:"OTEL_ENVIRONMENT,required"`
 	OTLPEndpoint       string        `env:"OTEL_EXPORTER_OTLP_ENDPOINT,required"`
 	PushTimeout        time.Duration `env:"OTEL_METRICS_PUSH_TIMEOUT,required"`

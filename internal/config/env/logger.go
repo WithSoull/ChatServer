@@ -5,10 +5,10 @@ import (
 )
 
 type loggerEnvConfig struct {
+	ServiceName        string `env:"SERVICE_NAME,required"`
 	Level              string `env:"LOGGER_LEVEL,required"`
 	AsJson             bool   `env:"LOGGER_AS_JSON,required"`
 	EnableOLTP         bool   `env:"LOGGER_ENABLE_OLTP,required"`
-	ServiceName        string `env:"OTEL_SERVICE_NAME,required"`
 	OTLPEndpoint       string `env:"OTEL_EXPORTER_OTLP_ENDPOINT,required"`
 	ServiceEnvironment string `env:"OTEL_ENVIRONMENT,required"`
 }

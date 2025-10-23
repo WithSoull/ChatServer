@@ -5,10 +5,10 @@ import (
 )
 
 type tracingEnvConfig struct {
+	ServiceNameValue       string `env:"SERVICE_NAME"`
+	ServiceVersionValue    string `env:"SERVICE_VERSION"`
 	CollectorEndpointValue string `env:"OTEL_EXPORTER_OTLP_ENDPOINT"`
-	ServiceNameValue       string `env:"OTEL_SERVICE_NAME"`
 	EnvironmentValue       string `env:"OTEL_ENVIRONMENT"`
-	ServiceVersionValue    string `env:"OTEL_SERVICE_VERSION"`
 }
 
 type tracingConfig struct {
