@@ -22,7 +22,7 @@ func (s *Service) RemoveUser(ctx context.Context, senderID, chatID, userID int64
 		return domainerrors.ErrCannotRemoveHigherUser
 	}
 
-	if err := s.chatParticipantRepo.RemoveUser(ctx, chatID, userID); err != nil {
+	if err := s.chatParticipantRepo.RemoveUserFromChat(ctx, chatID, userID); err != nil {
 		return err
 	}
 

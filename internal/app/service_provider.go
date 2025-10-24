@@ -3,6 +3,8 @@ package app
 import (
 	"context"
 
+	"github.com/WithSoull/ChatServer/internal/client/cache"
+	"github.com/WithSoull/ChatServer/internal/client/cache/hashmap"
 	"github.com/WithSoull/ChatServer/internal/config"
 	chatHandler "github.com/WithSoull/ChatServer/internal/handler/chat"
 	"github.com/WithSoull/ChatServer/internal/repository"
@@ -20,8 +22,9 @@ import (
 )
 
 type serviceProvider struct {
-	pgClient  db.Client
-	txManager db.TxManager
+	pgClient    db.Client
+	cacheClient cache.UsersIDsCacheClient
+	txManager   db.TxManager
 
 	chatRepo            repository.ChatRepo
 	chatParticipantRepo repository.ChatParticipantRepo
@@ -54,6 +57,15 @@ func (s *serviceProvider) PGClient(ctx context.Context) db.Client {
 	}
 
 	return s.pgClient
+}
+
+func (s *serviceProvider) CacheClient(ctx context.Context) cache.UsersIDsCacheClient {
+	if s.cacheClient == nil {
+		client := hashmap.NewClient()
+		s.cacheClient = client
+	}
+
+	return s.cacheClient
 }
 
 func (s *serviceProvider) ChatRepository(ctx context.Context) repository.ChatRepo {
@@ -90,7 +102,7 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 
 func (s *serviceProvider) ChatService(ctx context.Context) service.ChatService {
 	if s.chatService == nil {
-		s.chatService = chatService.NewService(s.ChatRepository(ctx), s.MessageRepository(ctx), s.ChatParticipantRepository(ctx), s.TxManager(ctx))
+		s.chatService = chatService.NewService(s.ChatRepository(ctx), s.MessageRepository(ctx), s.ChatParticipantRepository(ctx), s.TxManager(ctx), s.CacheClient(ctx))
 	}
 
 	return s.chatService

@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"github.com/WithSoull/ChatServer/internal/client/cache"
 	"github.com/WithSoull/ChatServer/internal/config"
 	"github.com/WithSoull/ChatServer/internal/repository"
 	"github.com/WithSoull/ChatServer/internal/service/chat/stream"
@@ -12,6 +13,8 @@ type Service struct {
 	msgRepo             repository.MessageRepo
 	chatParticipantRepo repository.ChatParticipantRepo
 
+	cache cache.UsersIDsCacheClient
+
 	streams stream.ChatStreams
 
 	txManager db.TxManager
@@ -22,6 +25,7 @@ func NewService(
 	msgRepo repository.MessageRepo,
 	chatParticipantRepo repository.ChatParticipantRepo,
 	txManager db.TxManager,
+	cache cache.UsersIDsCacheClient,
 ) *Service {
 	return &Service{
 		chatRepo:            chatRepo,
@@ -29,5 +33,6 @@ func NewService(
 		chatParticipantRepo: chatParticipantRepo,
 		txManager:           txManager,
 		streams:             *stream.NewChatStreams(config.AppConfig().Streaming.BufferSize()),
+		cache: cache,
 	}
 }
