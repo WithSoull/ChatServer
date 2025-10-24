@@ -123,8 +123,13 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 			grpcMiddleware.ChainUnaryServer(
 				rateLimiterInterceptor.NewRateLimiterInterceptor(ctx, config.AppConfig().RateLimiter).Unary,
 				metricsInterceptor.MetricsInterceptor,
-				validationInterceptor.ErrorCodesInterceptor(logger.Logger()),
+				validationInterceptor.ErrorCodesUnaryInterceptor(logger.Logger()),
 				tracing.UnaryServerInterceptor(config.AppConfig().Tracing.ServiceName()),
+			),
+		),
+		grpc.StreamInterceptor(
+			grpcMiddleware.ChainStreamServer(
+				validationInterceptor.ErrorCodesStreamInterceptor(logger.Logger()),
 			),
 		),
 	)
