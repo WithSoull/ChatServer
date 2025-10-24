@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_volume_chat_server:/var/lib/postgresql/data
     networks:
-      - messenger-network
+      - messanger-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE_NAME} -h 127.0.0.1 || exit 1"]
       interval: 2s
@@ -31,7 +31,7 @@ services:
         DB_HOST: pg-chat
     env_file: .env
     networks:
-      - messenger-network
+      - messanger-network
     depends_on:
       pg-chat:
         condition: service_healthy
@@ -44,7 +44,7 @@ services:
     restart: unless-stopped
     env_file: .env
     networks:
-      - messenger-network
+      - messanger-network
     depends_on:
       pg-chat:
         condition: service_healthy
@@ -52,6 +52,6 @@ services:
         condition: service_completed_successfully
 
 networks:
-  messenger-network:
+  messanger-network:
     external: true
 
