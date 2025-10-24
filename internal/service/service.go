@@ -7,6 +7,8 @@ import (
 )
 
 type ChatService interface {
+	ConnectChat(ctx context.Context, senderID, chatID int64) (chan *model.Message, error)
+	DisconnectChat(ctx context.Context, senderID, chatID int64)
 	CreateChat(ctx context.Context, senderID int64, chat_info model.ChatInfo) (int64, error)
 	DeleteChat(ctx context.Context, senderID, chatID int64) error
 	GetChat(ctx context.Context, senderID, chatID int64) (model.Chat, []model.Message, error)

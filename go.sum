@@ -3,8 +3,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/Masterminds/squirrel v1.5.4 h1:uUcX/aBc8O7Fg9kaISIUsHXdKuqehiXAMQTYX8afzqM=
 github.com/Masterminds/squirrel v1.5.4/go.mod h1:NNaOrjSoIDfDA40n7sr2tPNZRfjzjA400rg+riTZj10=
-github.com/WithSoull/platform_common v1.4.6 h1:bE/cmQLz63hFWVcFsGufE8ZjE2fDQurWtlZHkGGSdFA=
-github.com/WithSoull/platform_common v1.4.6/go.mod h1:sbB5eP+51QHqEsSW/VKQIFXv2aI4mfx/NUYlCKFzMZQ=
+github.com/WithSoull/platform_common v1.4.7 h1:2bdEitNkkUjx5L4gWkuQd14AJZAvRpzXaAeis0mDpzU=
+github.com/WithSoull/platform_common v1.4.7/go.mod h1:sbB5eP+51QHqEsSW/VKQIFXv2aI4mfx/NUYlCKFzMZQ=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/caarlos0/env/v11 v11.3.1 h1:cArPWC15hWmEt+gWk7YBi7lEXTXCvpaSdCiZE2X5mCA=
 github.com/caarlos0/env/v11 v11.3.1/go.mod h1:qupehSf/Y0TUTsxKywqRt/vJjN5nz6vauiYEUUr8P4U=

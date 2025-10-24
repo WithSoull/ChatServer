@@ -27,7 +27,7 @@ type ChatParticipantRepo interface {
 }
 
 type MessageRepo interface {
-	Create(ctx context.Context, msg model.Message) (int64, error)
+	Create(ctx context.Context, msg *model.Message) error
 	Delete(ctx context.Context, messageID int64) error
 	Update(ctx context.Context, msg model.Message) error
 	Get(ctx context.Context, messageID int64) (model.Message, error)

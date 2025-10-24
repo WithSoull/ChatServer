@@ -14,5 +14,7 @@ func (s *Service) DeleteChat(ctx context.Context, senderID, chatID int64) error 
 	if err := s.chatRepo.Delete(ctx, chatID); err != nil {
 		return err
 	}
+
+	s.streams.RemoveChatStream(chatID)
 	return nil
 }

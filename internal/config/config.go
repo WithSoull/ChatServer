@@ -19,6 +19,7 @@ type config struct {
 	Tracing     TracingConfig
 	Metrics     MetricsConfig
 	RateLimiter RateLimiterConfig
+	Streaming   StreamingConfig
 }
 
 // Load reads environment variables from .env file(s) and initializes the application configuration.
@@ -65,6 +66,11 @@ func Load(path ...string) error {
 		return err
 	}
 
+	streamingCfg, err := env.NewStreamingConfig()
+	if err != nil {
+		return err
+	}
+
 	appConfig = &config{
 		Logger:      loggerCfg,
 		GRPC:        grpcCfg,
@@ -73,6 +79,7 @@ func Load(path ...string) error {
 		Tracing:     tracingCfg,
 		Metrics:     metricsCfg,
 		RateLimiter: rateLimiterCfg,
+		Streaming:   streamingCfg,
 	}
 
 	return nil

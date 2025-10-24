@@ -2,30 +2,28 @@ package message
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/WithSoull/platform_common/pkg/client/db"
-	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/repository/converter"
-	"github.com/jackc/pgx/v4"
+	"github.com/WithSoull/platform_common/pkg/client/db"
 )
 
-func (r *messageRepo) Create(ctx context.Context, msg model.Message) (int64, error) {
-	rmsg := converter.FromModelToRepoMessage(msg)
+func (r *messageRepo) Create(ctx context.Context, msg *model.Message) error {
+	rmsg := converter.FromModelToRepoMessage(*msg)
 	now := time.Now()
 
 	builder := sq.Insert(TableName).
 		PlaceholderFormat(sq.Dollar).
 		Columns(ChatIDColumn, SenderIDColumn, TextColumn, IsPinnedColumn, SendAtColumn, UpdatedAtColumn).
 		Values(rmsg.ChatID, rmsg.SenderID, rmsg.Text, rmsg.IsPinned, now, now).
-		Suffix("RETURNING id")
+		Suffix(fmt.Sprintf("RETURNING %s, %s, %s", IDColumn, SendAtColumn, UpdatedAtColumn))
 
 	query, args, err := builder.ToSql()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	q := db.Query{
@@ -33,15 +31,14 @@ func (r *messageRepo) Create(ctx context.Context, msg model.Message) (int64, err
 		QueryRaw: query,
 	}
 
-	var msgID int64
-
-	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&msgID)
+	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&rmsg.ID, &rmsg.SendAt, &rmsg.UpdatedAt)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return 0, domainerrors.ErrMessageNotFound
-		}
-		return 0, err
+		return err
 	}
 
-	return msgID, nil
+	msg.SendAt = rmsg.SendAt
+	msg.MessageID = rmsg.ID
+	msg.UpdatedAt = rmsg.UpdatedAt
+
+	return nil
 }

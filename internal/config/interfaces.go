@@ -44,3 +44,7 @@ type RateLimiterConfig interface {
 	Limit() int64
 	Period() time.Duration
 }
+
+type StreamingConfig interface {
+	BufferSize() int64
+}

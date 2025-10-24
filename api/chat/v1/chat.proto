@@ -15,6 +15,7 @@ service ChatV1 {
   // --------------------
   // Chat Endpoints
   // --------------------
+  rpc ConnectChat(ConnectChatRequest) returns (stream Message);
   rpc CreateChat(CreateChatRequest) returns (CreateChatResponse){
     option (google.api.http) = {
       post: "/chat/v1/chats"
@@ -118,6 +119,11 @@ message Message {
 // --------------------
 // Chat RPC Messages
 // --------------------
+message ConnectChatRequest {
+  int64 chat_id = 1;
+  int64 sender_id = 10;
+}
+
 message CreateChatRequest {
   ChatInfo chat_info = 1;
 

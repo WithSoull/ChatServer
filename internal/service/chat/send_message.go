@@ -25,13 +25,16 @@ func (s *Service) SendMessage(ctx context.Context, senderID int64, chatID int64,
 	msg := model.Message{
 		SenderID: senderID,
 		ChatID:   chatID,
+		IsPinned: false,
 		Text:     text,
 	}
 
-	_, err = s.msgRepo.Create(ctx, msg)
+	err = s.msgRepo.Create(ctx, &msg)
 	if err != nil {
 		return err
 	}
+
+	s.streams.AddMsgToChatStream(chatID, &msg)
 
 	return nil
 }

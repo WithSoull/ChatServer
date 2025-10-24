@@ -26,5 +26,7 @@ func (s *Service) RemoveUser(ctx context.Context, senderID, chatID, userID int64
 		return err
 	}
 
+	s.streams.RemoveMsgStream(chatID, userID)
+
 	return nil
 }
