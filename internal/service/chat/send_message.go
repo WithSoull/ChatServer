@@ -12,7 +12,7 @@ func (s *Service) SendMessage(ctx context.Context, senderID int64, chatID int64,
 	// Validation
 	if err := validate.Validate(
 		ctx,
-		validator.ValidateNotEmptyMessege(text),
+		validator.ValidateNotEmptyMessage(text),
 	); err != nil {
 		return err
 	}

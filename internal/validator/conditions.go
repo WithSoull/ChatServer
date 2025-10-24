@@ -7,7 +7,7 @@ import (
 	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
-func ValidateNotEmptyMessege(text string) validate.Condition {
+func ValidateNotEmptyMessage(text string) validate.Condition {
 	return func(ctx context.Context) error {
 		if text == "" {
 			return domainerrors.ErrEmptyMessageText
