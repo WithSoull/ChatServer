@@ -1,8 +1,6 @@
 package converter
 
 import (
-	"time"
-
 	"github.com/WithSoull/ChatServer/internal/model"
 	dmodel "github.com/WithSoull/ChatServer/internal/model" // domain/service model
 	rmodel "github.com/WithSoull/ChatServer/internal/repository/model"
@@ -61,17 +59,24 @@ func FromRepoToModelChat(r rmodel.Chat, userIDs []int64) dmodel.Chat {
 
 // ---------- ChatUser ----------
 
-func FromModelToRepoChatParticipant(chatID, userID int64, role dmodel.Role, createdAt time.Time) rmodel.ChatParticipant {
+func FromModelToRepoChatParticipant(m dmodel.ChatParticipant) rmodel.ChatParticipant {
 	return rmodel.ChatParticipant{
-		ChatID:    chatID,
-		UserID:    userID,
-		Role:      FromModelToRepoRole(role),
-		CreatedAt: createdAt,
+		ChatID:    m.ChatID,
+		UserID:    m.UserID,
+		Role:      FromModelToRepoRole(m.Role),
+		CreatedAt: m.CreatedAt,
+		UpdatedAt: m.UpdatedAt,
 	}
 }
 
-func FromRepoToModelChatParticipant(r rmodel.ChatParticipant) (chatID, userID int64, role dmodel.Role, createdAt time.Time) {
-	return r.ChatID, r.UserID, FromRepoToModelRole(r.Role), r.CreatedAt
+func FromRepoToModelChatParticipant(r rmodel.ChatParticipant) dmodel.ChatParticipant {
+	return dmodel.ChatParticipant{
+		ChatID:    r.ChatID,
+		UserID:    r.UserID,
+		Role:      FromRepoToModelRole(r.Role),
+		CreatedAt: r.CreatedAt,
+		UpdatedAt: r.UpdatedAt,
+	}
 }
 
 // ---------- Message ----------

@@ -5,9 +5,9 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/WithSoull/platform_common/pkg/client/db"
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/platform_common/pkg/client/db"
 )
 
 func (r *chatParticipantRepo) UpdateUserRole(ctx context.Context, chatID, userID int64, role model.Role) error {
@@ -32,7 +32,7 @@ func (r *chatParticipantRepo) UpdateUserRole(ctx context.Context, chatID, userID
 		return err
 	}
 	if res.RowsAffected() == 0 {
-		return domainerrors.ErrUserNotFound
+		return domainerrors.ErrUserNotFound(userID)
 	}
 
 	return nil

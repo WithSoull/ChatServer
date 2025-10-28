@@ -85,7 +85,7 @@ func NewChatStreams(bufferLength int64) *ChatStreams {
 }
 
 // data race safly
-func (cs *ChatStreams) chatStream(chatID int64) *chatStream {
+func (cs *ChatStreams) setChatStream(chatID int64) *chatStream {
 	cs.mu.Lock()
 	chatStream, ok := cs.streams[chatID]
 	if !ok {
@@ -97,8 +97,22 @@ func (cs *ChatStreams) chatStream(chatID int64) *chatStream {
 	return chatStream
 }
 
+func (cs *ChatStreams) getChatStream(chatID int64) (*chatStream, bool) {
+	cs.mu.Lock()
+	chatStream, ok := cs.streams[chatID]
+	if !ok {
+		return nil, false
+	}
+	cs.mu.Unlock()
+
+	return chatStream, true
+}
+
 func (cs *ChatStreams) RemoveMsgStream(chatID, userID int64) {
-	cs.chatStream(chatID).removeMsgStream(userID)
+	chatStream, ok := cs.getChatStream(chatID)
+	if ok {
+		chatStream.removeMsgStream(userID)
+	}
 }
 
 // data race safly
@@ -129,10 +143,10 @@ func (cs *ChatStreams) RemoveChatStream(chatID int64) {
 
 // data race safly
 func (cs *ChatStreams) MsgStream(chatID, userID int64) chan *model.Message {
-	return cs.chatStream(chatID).msgStream(userID)
+	return cs.setChatStream(chatID).msgStream(userID)
 }
 
 // data race safly
 func (cs *ChatStreams) AddMsgToChatStream(chatID int64, msg *model.Message) {
-	cs.chatStream(chatID).addMsg(msg)
+	cs.setChatStream(chatID).addMsg(msg)
 }

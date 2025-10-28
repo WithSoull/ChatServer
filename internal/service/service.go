@@ -14,9 +14,14 @@ type ChatService interface {
 	GetChat(ctx context.Context, senderID, chatID int64) (model.Chat, []model.Message, error)
 	AddUser(ctx context.Context, senderID, chatID, userID int64, role model.Role) error
 	RemoveUser(ctx context.Context, senderID, chatID, userID int64) error
+	RemoveUserFromAllChats(ctx context.Context, userID int64) error
 	UpdateUserRole(ctx context.Context, senderID, chatID, userID int64, role model.Role) error
 	SendMessage(ctx context.Context, senderID, chatID int64, text string) error
 	DeleteMessage(ctx context.Context, senderID, messageID int64) error
 	EditMessage(ctx context.Context, senderID, messageID int64, newText string) error
 	PinMessage(ctx context.Context, senderID, messageID int64, newIsPinned bool) error
+}
+
+type UserConsumerService interface {
+	RunConsumer(ctx context.Context) error
 }

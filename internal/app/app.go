@@ -181,52 +181,71 @@ func (a *App) initTracing(ctx context.Context) error {
 	return nil
 }
 
-func (a *App) runGRPCServer() error {
+func (a *App) runGRPCServer(ctx context.Context) error {
 	lis, err := net.Listen("tcp", config.AppConfig().GRPC.Address())
 	if err != nil {
 		return err
 	}
 
-	logger.Info(context.Background(), "GRPC server listening", zap.String("address", config.AppConfig().GRPC.Address()))
+	logger.Info(ctx, "GRPC server listening", zap.String("address", config.AppConfig().GRPC.Address()))
 
 	err = a.grpcServer.Serve(lis)
 	if err != nil {
 		return err
 	}
 
-	logger.Info(context.Background(), "GRPC server stopped gracefully")
+	logger.Info(ctx, "GRPC server stopped gracefully")
 	return nil
 }
 
-func (a *App) runHTTPServer() error {
-	logger.Info(context.Background(), "HTTP server is starting listening and serving", zap.String("address", config.AppConfig().HTTP.Address()))
+func (a *App) runHTTPServer(ctx context.Context) error {
+	logger.Info(ctx, "HTTP server is starting listening and serving", zap.String("address", config.AppConfig().HTTP.Address()))
 	err := a.httpServer.ListenAndServe()
 	if err != nil {
 		return err
 	}
-	logger.Info(context.Background(), "HTTP server stopped gracefully")
+	logger.Info(ctx, "HTTP server stopped gracefully")
 	return nil
 }
 
-func (a *App) Run() error {
+func (a *App) runConcumer(ctx context.Context) error {
+	logger.Info(ctx, "Starting UserConcumerService")
+
+	err := a.serviceProvider.UserConsumerService(ctx).RunConsumer(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *App) Run(ctx context.Context) error {
 	wg := sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(3)
 
 	go func() {
 		defer wg.Done()
 
-		err := a.runGRPCServer()
+		err := a.runGRPCServer(ctx)
 		if err != nil {
-			logger.Error(context.Background(), "fault grpc server", zap.Error(err))
+			logger.Error(ctx, "fault grpc server", zap.Error(err))
 		}
 	}()
 
 	go func() {
 		defer wg.Done()
 
-		err := a.runHTTPServer()
+		err := a.runHTTPServer(ctx)
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logger.Error(context.Background(), "fault http server", zap.Error(err))
+			logger.Error(ctx, "fault http server", zap.Error(err))
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+
+		if err := a.runConcumer(ctx); err != nil {
+			logger.Error(ctx, "fault concumer", zap.Error(err))
 		}
 	}()
 

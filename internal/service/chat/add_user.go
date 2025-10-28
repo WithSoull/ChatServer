@@ -8,6 +8,10 @@ import (
 )
 
 func (s *Service) AddUser(ctx context.Context, senderID, chatID, userID int64, role model.Role) error {
+	if err := s.userExist(ctx, userID); err != nil {
+		return err
+	}
+
 	// role > 1 is equal admin or owner
 	senderRole, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_ADMIN)
 	if err != nil {

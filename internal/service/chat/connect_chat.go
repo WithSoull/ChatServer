@@ -4,11 +4,13 @@ import (
 	"context"
 
 	"github.com/WithSoull/ChatServer/internal/model"
-	"github.com/WithSoull/platform_common/pkg/logger"
-	"go.uber.org/zap"
 )
 
 func (s *Service) ConnectChat(ctx context.Context, senderID, chatID int64) (chan *model.Message, error) {
+	if err := s.userExist(ctx, senderID); err != nil {
+		return nil, err
+	}
+
 	_, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_USER)
 	if err != nil {
 		return nil, err
@@ -19,6 +21,5 @@ func (s *Service) ConnectChat(ctx context.Context, senderID, chatID int64) (chan
 
 // WARN: Dont check user permisions !!!
 func (s *Service) DisconnectChat(ctx context.Context, senderID, chatID int64) {
-	logger.Debug(ctx, "handle disconnectChat", zap.Int64("chatID", chatID), zap.Int64("userID", senderID))
 	s.streams.RemoveMsgStream(chatID, senderID)
 }

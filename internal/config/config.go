@@ -20,6 +20,11 @@ type config struct {
 	Metrics     MetricsConfig
 	RateLimiter RateLimiterConfig
 	Streaming   StreamingConfig
+
+	Kafka               KafkaConfig
+	Sarama              SaramaConfig
+	UserCreatedConsumer UserCreatedConsumerConfig
+	UserDeletedConsumer UserDeletedConsumerConfig
 }
 
 // Load reads environment variables from .env file(s) and initializes the application configuration.
@@ -71,6 +76,26 @@ func Load(path ...string) error {
 		return err
 	}
 
+	kafkaCfg, err := env.NewKafkaConfig()
+	if err != nil {
+		return err
+	}
+
+	saramaCfg, err := env.NewSaramaConfig()
+	if err != nil {
+		return err
+	}
+
+	userCreatedConsumerCfg, err := env.NewUserCreatedConsumerConfig()
+	if err != nil {
+		return err
+	}
+
+	userDeletedConsumerCfg, err := env.NewUserDeletedConsumerConfig()
+	if err != nil {
+		return err
+	}
+
 	appConfig = &config{
 		Logger:      loggerCfg,
 		GRPC:        grpcCfg,
@@ -80,6 +105,11 @@ func Load(path ...string) error {
 		Metrics:     metricsCfg,
 		RateLimiter: rateLimiterCfg,
 		Streaming:   streamingCfg,
+
+		Kafka:               kafkaCfg,
+		Sarama:              saramaCfg,
+		UserCreatedConsumer: userCreatedConsumerCfg,
+		UserDeletedConsumer: userDeletedConsumerCfg,
 	}
 
 	return nil

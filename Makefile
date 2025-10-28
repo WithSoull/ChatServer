@@ -26,6 +26,8 @@ get-deps:
 	go get -u github.com/grpc-ecosystem/grpc-gateway/v2/runtime
 	go get -u github.com/grpc-ecosystem/go-grpc-middleware
 
+	go get -u github.com/IBM/sarama
+
 	go get -u github.com/WithSoull/platform_common
 
 

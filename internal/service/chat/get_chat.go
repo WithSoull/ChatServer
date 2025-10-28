@@ -8,6 +8,10 @@ import (
 )
 
 func (s *Service) GetChat(ctx context.Context, senderID, chatID int64) (model.Chat, []model.Message, error) {
+	if err := s.userExist(ctx, senderID); err != nil {
+		return model.Chat{}, nil, err
+	}
+
 	if _, err := s.checkUserRole(ctx, chatID, senderID, model.ROLE_USER); err != nil {
 		return model.Chat{}, nil, err
 	}

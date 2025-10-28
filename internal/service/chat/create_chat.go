@@ -48,12 +48,19 @@ func (s *Service) CreateChat(ctx context.Context, senderID int64, chat_info mode
 				userRole = model.ROLE_USER
 			}
 
+			if err := s.userExist(ctx, userID); err != nil {
+				return err
+			}
+
 			if err := s.chatParticipantRepo.AddUser(ctx, chatID, userID, userRole); err != nil {
 				return err
 			}
 		}
 
 		if !isOwnerAdded {
+			if err := s.userExist(ctx, senderID); err != nil {
+				return err
+			}
 			err := s.chatParticipantRepo.AddUser(ctx, chatID, senderID, model.ROLE_OWNER)
 			if err != nil {
 				return err

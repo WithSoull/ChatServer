@@ -18,6 +18,7 @@ func (h *Handler) ConnectChat(req *desc.ConnectChatRequest, stream desc.ChatV1_C
 			return err
 		}
 	}
+
 	channel, err := h.service.ConnectChat(stream.Context(), req.GetSenderId(), req.GetChatId())
 	if err != nil {
 		return nil

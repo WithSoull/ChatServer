@@ -17,7 +17,7 @@ func main() {
 		panic(fmt.Sprintf("failed to init app with error: %v", err))
 	}
 
-	if err := a.Run(); err != nil {
+	if err := a.Run(appCtx); err != nil {
 		logger.Fatal(appCtx, "failed to run app", zap.Error(err))
 	}
 }

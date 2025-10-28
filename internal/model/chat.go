@@ -33,3 +33,11 @@ type Message struct {
 	SendAt    time.Time `json:"send_at"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
+
+type ChatParticipant struct {
+	UserID    int64     `json:"user_id"`
+	ChatID    int64     `json:"chat_id"`
+	Role      Role      `json:"role"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}

@@ -15,7 +15,7 @@ type ChatRepo interface {
 type ChatParticipantRepo interface {
 	AddUser(ctx context.Context, chatID, userID int64, role model.Role) error
 	RemoveUserFromChat(ctx context.Context, chatID, userID int64) error
-	RemoveUserFromAllChats(ctx context.Context, userID int64) error
+	RemoveUserFromAllChats(ctx context.Context, userID int64) ([]model.ChatParticipant, error)
 	GetUsers(ctx context.Context, chatID int64) ([]int64, error)
 	UpdateUserRole(ctx context.Context, chatID, userID int64, role model.Role) error
 

@@ -1,6 +1,8 @@
 package domainerrors
 
 import (
+	"fmt"
+
 	"github.com/WithSoull/platform_common/pkg/sys"
 	"github.com/WithSoull/platform_common/pkg/sys/codes"
 	"github.com/WithSoull/platform_common/pkg/sys/validate"
@@ -8,7 +10,6 @@ import (
 
 var (
 	// Resource errors (NotFound)
-	ErrUserNotFound    = sys.NewCommonError("user not found", codes.NotFound)
 	ErrMessageNotFound = sys.NewCommonError("message not found", codes.NotFound)
 	ErrChatNotFound    = sys.NewCommonError("chat does not exist", codes.NotFound)
 
@@ -40,3 +41,7 @@ var (
 	ErrFailedToCheckRole                   = sys.NewCommonError("failed to check user's role", codes.Internal)
 	ErrCantDefineWhoDoesNotExistUserOrChat = sys.NewCommonError("cant define who does not exist: chat or user?", codes.Internal)
 )
+
+func ErrUserNotFound(userID int64) error {
+	return sys.NewCommonError(fmt.Sprintf("user(ID=%d) not found", userID), codes.NotFound)
+}
