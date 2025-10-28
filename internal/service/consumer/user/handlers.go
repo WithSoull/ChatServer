@@ -15,8 +15,6 @@ func (s *userConcumerService) UserCreatedHandler(ctx context.Context, msg kafka.
 		return err
 	}
 
-	s.cache.Add(ctx, event.UserID)
-
 	logger.Info(ctx, "Processing message",
 		zap.String("topic", msg.Topic),
 		zap.Any("partition", msg.Partition),
@@ -25,6 +23,10 @@ func (s *userConcumerService) UserCreatedHandler(ctx context.Context, msg kafka.
 		zap.Timep("createdAt", event.CreatedAt),
 	)
 
+	if err := s.cache.Add(ctx, event.UserID); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -32,13 +34,6 @@ func (s *userConcumerService) UserDeletedHandler(ctx context.Context, msg kafka.
 	event, err := s.userDeletedDecoder.Decode(msg.Value)
 	if err != nil {
 		logger.Error(ctx, "Failed to decode UserDeleted", zap.Error(err))
-		return err
-	}
-
-	s.cache.Remove(ctx, event.UserID)
-	err = s.chatService.RemoveUserFromAllChats(ctx, event.UserID)
-	if err != nil {
-		logger.Error(ctx, "failed to remove deleted user from all chats", zap.Error(err), zap.Int64("userID", event.UserID))
 		return err
 	}
 
@@ -52,5 +47,13 @@ func (s *userConcumerService) UserDeletedHandler(ctx context.Context, msg kafka.
 		zap.Timep("deletedAt", event.DeletedAt),
 	)
 
+	if err := s.cache.Remove(ctx, event.UserID); err != nil {
+		return err
+	}
+	err = s.chatService.RemoveUserFromAllChats(ctx, event.UserID)
+	if err != nil {
+		logger.Error(ctx, "failed to remove deleted user from all chats", zap.Error(err), zap.Int64("userID", event.UserID))
+		return err
+	}
 	return nil
 }

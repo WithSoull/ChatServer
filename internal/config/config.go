@@ -20,6 +20,7 @@ type config struct {
 	Metrics     MetricsConfig
 	RateLimiter RateLimiterConfig
 	Streaming   StreamingConfig
+	Redis       RedisConfig
 
 	Kafka               KafkaConfig
 	Sarama              SaramaConfig
@@ -76,6 +77,11 @@ func Load(path ...string) error {
 		return err
 	}
 
+	redisCfg, err := env.NewRedisConfig()
+	if err != nil {
+		return err
+	}
+
 	kafkaCfg, err := env.NewKafkaConfig()
 	if err != nil {
 		return err
@@ -105,6 +111,7 @@ func Load(path ...string) error {
 		Metrics:     metricsCfg,
 		RateLimiter: rateLimiterCfg,
 		Streaming:   streamingCfg,
+		Redis:       redisCfg,
 
 		Kafka:               kafkaCfg,
 		Sarama:              saramaCfg,

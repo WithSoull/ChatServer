@@ -23,6 +23,8 @@ get-deps:
 	go get -u github.com/caarlos0/env/v11
 	go get -u github.com/lib/pq
 
+	go get -u github.com/gomodule/redigo/redis
+
 	go get -u github.com/grpc-ecosystem/grpc-gateway/v2/runtime
 	go get -u github.com/grpc-ecosystem/go-grpc-middleware
 

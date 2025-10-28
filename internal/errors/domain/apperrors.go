@@ -40,6 +40,9 @@ var (
 	// Internal errors
 	ErrFailedToCheckRole                   = sys.NewCommonError("failed to check user's role", codes.Internal)
 	ErrCantDefineWhoDoesNotExistUserOrChat = sys.NewCommonError("cant define who does not exist: chat or user?", codes.Internal)
+
+	// Other
+	ErrChatHasBeenDeleted = sys.NewCommonError("chat has been deleted", codes.Aborted)
 )
 
 func ErrUserNotFound(userID int64) error {

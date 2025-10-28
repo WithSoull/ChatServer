@@ -48,6 +48,7 @@ func (s *Service) RemoveUserFromAllChats(ctx context.Context, userID int64) erro
 			if err := s.chatRepo.Delete(ctx, chatParticipant.ChatID); err != nil {
 				logger.Error(ctx, "failed to delete chat", zap.Int64("chatID", chatParticipant.ChatID))
 			}
+			s.streams.RemoveChatStream(chatParticipant.ChatID)
 		}
 	}
 

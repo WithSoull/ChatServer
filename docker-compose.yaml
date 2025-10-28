@@ -1,5 +1,6 @@
 volumes:
   postgres_volume_chat_server:
+  redis_aof_data:
 
 services:
   pg-chat:
@@ -35,6 +36,17 @@ services:
     depends_on:
       pg-chat:
         condition: service_healthy
+
+  redis-users:
+    image: redis:7.2.5-alpine3.20
+    container_name: redis-users
+    ports:
+      - "${CACHE_PORT}:${CACHE_PORT}"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_aof_data:/data
+    networks:
+      - messanger-network
 
   chat-server:
     build: .

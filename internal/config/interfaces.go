@@ -69,3 +69,10 @@ type UserCreatedConsumerConfig interface {
 type UserDeletedConsumerConfig interface {
 	Topic() string
 }
+
+type RedisConfig interface {
+	Address() string
+	MaxIdle() int8
+	ConnTimeout() time.Duration
+	IdleTimeout() time.Duration
+}

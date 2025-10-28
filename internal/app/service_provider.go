@@ -6,7 +6,7 @@ import (
 
 	"github.com/IBM/sarama"
 	"github.com/WithSoull/ChatServer/internal/client/cache"
-	"github.com/WithSoull/ChatServer/internal/client/cache/hashmap"
+	"github.com/WithSoull/ChatServer/internal/client/cache/redis"
 	"github.com/WithSoull/ChatServer/internal/config"
 	converterKafka "github.com/WithSoull/ChatServer/internal/converter/kafka"
 	decoderKafka "github.com/WithSoull/ChatServer/internal/converter/kafka/decoder"
@@ -26,12 +26,15 @@ import (
 	platformKafka "github.com/WithSoull/platform_common/pkg/kafka"
 	platformKafkaConsumer "github.com/WithSoull/platform_common/pkg/kafka/consumer"
 	"github.com/WithSoull/platform_common/pkg/logger"
+	redigo "github.com/gomodule/redigo/redis"
 )
 
 type serviceProvider struct {
-	pgClient    db.Client
+	pgClient  db.Client
+	txManager db.TxManager
+
+	redisPool   *redigo.Pool
 	cacheClient cache.UsersIDsCacheClient
-	txManager   db.TxManager
 
 	chatRepo            repository.ChatRepo
 	chatParticipantRepo repository.ChatParticipantRepo
@@ -78,11 +81,31 @@ func (s *serviceProvider) PGClient(ctx context.Context) db.Client {
 
 func (s *serviceProvider) CacheClient(ctx context.Context) cache.UsersIDsCacheClient {
 	if s.cacheClient == nil {
-		client := hashmap.NewClient()
+		client := redis.NewClient(s.RedisPool())
 		s.cacheClient = client
 	}
 
 	return s.cacheClient
+}
+
+func (s *serviceProvider) RedisPool() *redigo.Pool {
+	if s.redisPool == nil {
+		redisPool := &redigo.Pool{
+			MaxIdle:     int(config.AppConfig().Redis.MaxIdle()),
+			IdleTimeout: config.AppConfig().Redis.IdleTimeout(),
+			DialContext: func(ctx context.Context) (redigo.Conn, error) {
+				return redigo.DialContext(ctx, "tcp", config.AppConfig().Redis.Address())
+			},
+		}
+
+		closer.AddNamed("RedisPool", func(ctx context.Context) error {
+			return redisPool.Close()
+		})
+
+		s.redisPool = redisPool
+	}
+
+	return s.redisPool
 }
 
 func (s *serviceProvider) ChatRepository(ctx context.Context) repository.ChatRepo {

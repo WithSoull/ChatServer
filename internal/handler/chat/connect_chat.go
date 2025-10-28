@@ -2,6 +2,7 @@ package chat
 
 import (
 	"github.com/WithSoull/ChatServer/internal/converter"
+	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
 	"github.com/WithSoull/platform_common/pkg/logger"
 	"go.uber.org/zap"
@@ -29,7 +30,7 @@ func (h *Handler) ConnectChat(req *desc.ConnectChatRequest, stream desc.ChatV1_C
 		case msg, ok := <-channel:
 			if !ok || msg == nil {
 				logger.Debug(stream.Context(), "connection was closed because chat was deleted", zap.Int64("chatID", req.GetChatId()), zap.Int64("senderID", req.GetSenderId()))
-				return nil
+				return domainerrors.ErrChatHasBeenDeleted
 			}
 
 			if err := stream.Send(converter.FromModelToProtoMessage(*msg)); err != nil {
