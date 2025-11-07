@@ -8,6 +8,6 @@ import (
 )
 
 func (h *Handler) PinMessage(ctx context.Context, req *desc.PinMessageRequest) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, h.service.PinMessage(ctx, req.GetSenderId(), req.GetMessageId(), req.GetNewIsPinned())
+	return &emptypb.Empty{}, h.service.PinMessage(ctx, req.GetMessageId(), req.GetNewIsPinned())
 
 }

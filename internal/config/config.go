@@ -21,6 +21,7 @@ type config struct {
 	RateLimiter RateLimiterConfig
 	Streaming   StreamingConfig
 	Redis       RedisConfig
+	JWT         JWTConfig
 
 	Kafka               KafkaConfig
 	Sarama              SaramaConfig
@@ -82,6 +83,11 @@ func Load(path ...string) error {
 		return err
 	}
 
+	jwtCfg, err := env.NewJWTConfig()
+	if err != nil {
+		return err
+	}
+
 	kafkaCfg, err := env.NewKafkaConfig()
 	if err != nil {
 		return err
@@ -112,6 +118,7 @@ func Load(path ...string) error {
 		RateLimiter: rateLimiterCfg,
 		Streaming:   streamingCfg,
 		Redis:       redisCfg,
+		JWT:         jwtCfg,
 
 		Kafka:               kafkaCfg,
 		Sarama:              saramaCfg,

@@ -8,5 +8,5 @@ import (
 )
 
 func (h *Handler) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, h.service.DeleteChat(ctx, req.GetSenderId(), req.GetChatId())
+	return &emptypb.Empty{}, h.service.DeleteChat(ctx, req.GetChatId())
 }

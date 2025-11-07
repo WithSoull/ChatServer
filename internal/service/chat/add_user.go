@@ -5,9 +5,15 @@ import (
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/platform_common/pkg/contextx/claimsctx"
 )
 
-func (s *Service) AddUser(ctx context.Context, senderID, chatID, userID int64, role model.Role) error {
+func (s *Service) AddUser(ctx context.Context, chatID, userID int64, role model.Role) error {
+	senderID, ok := claimsctx.ExtractUserID(ctx)
+	if !ok {
+		return domainerrors.ErrFailedToVerify
+	}
+
 	if err := s.userExist(ctx, userID); err != nil {
 		return err
 	}

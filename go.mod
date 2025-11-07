@@ -5,14 +5,16 @@ go 1.24.1
 require (
 	github.com/IBM/sarama v1.46.3
 	github.com/Masterminds/squirrel v1.5.4
-	github.com/WithSoull/platform_common v1.5.4
+	github.com/WithSoull/platform_common v1.6.6
 	github.com/caarlos0/env/v11 v11.3.1
+	github.com/gomodule/redigo v1.9.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
 	github.com/jackc/pgconn v1.14.3
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/joho/godotenv v1.5.1
 	go.uber.org/zap v1.27.0
+	golang.org/x/sync v0.17.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20251022142026-3a174f9686a8
 	google.golang.org/grpc v1.76.0
 	google.golang.org/protobuf v1.36.10
@@ -27,8 +29,8 @@ require (
 	github.com/georgysavva/scany v1.2.3 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/golang-jwt/jwt/v5 v5.3.0 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
-	github.com/gomodule/redigo v1.9.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -67,7 +69,6 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/net v0.46.0 // indirect
-	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251022142026-3a174f9686a8 // indirect

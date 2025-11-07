@@ -5,11 +5,17 @@ import (
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
+	"github.com/WithSoull/platform_common/pkg/contextx/claimsctx"
 	"github.com/WithSoull/platform_common/pkg/logger"
 	"go.uber.org/zap"
 )
 
-func (s *Service) RemoveUser(ctx context.Context, senderID, chatID, userID int64) error {
+func (s *Service) RemoveUser(ctx context.Context, chatID, userID int64) error {
+	senderID, ok := claimsctx.ExtractUserID(ctx)
+	if !ok {
+		return domainerrors.ErrFailedToVerify
+	}
+
 	targetRole, err := s.checkUserRole(ctx, chatID, userID, model.ROLE_USER)
 	if err != nil {
 		return err

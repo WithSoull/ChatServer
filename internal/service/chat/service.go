@@ -7,6 +7,7 @@ import (
 	"github.com/WithSoull/ChatServer/internal/config"
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/repository"
+	"github.com/WithSoull/ChatServer/internal/service"
 	"github.com/WithSoull/ChatServer/internal/service/chat/stream"
 	"github.com/WithSoull/platform_common/pkg/client/db"
 )
@@ -30,7 +31,7 @@ func NewService(
 	txManager db.TxManager,
 
 	cache cache.UsersIDsCacheClient,
-) *Service {
+) service.ChatService {
 	return &Service{
 		chatRepo:            chatRepo,
 		msgRepo:             msgRepo,

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/WithSoull/ChatServer/internal/config"
+	"github.com/WithSoull/ChatServer/internal/middleware"
 	desc "github.com/WithSoull/ChatServer/pkg/chat/v1"
 	"github.com/WithSoull/platform_common/pkg/closer"
 	"github.com/WithSoull/platform_common/pkg/metric"
@@ -124,12 +125,14 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 				rateLimiterInterceptor.NewRateLimiterInterceptor(ctx, config.AppConfig().RateLimiter).Unary,
 				metricsInterceptor.MetricsInterceptor,
 				validationInterceptor.ErrorCodesUnaryInterceptor(logger.Logger()),
+				middleware.TokenVerifierUnaryInterceptor(a.serviceProvider.TokenVerifier(ctx)),
 				tracing.UnaryServerInterceptor(config.AppConfig().Tracing.ServiceName()),
 			),
 		),
 		grpc.StreamInterceptor(
 			grpcMiddleware.ChainStreamServer(
 				validationInterceptor.ErrorCodesStreamInterceptor(logger.Logger()),
+				middleware.TokenVerifierStreamInterceptor(a.serviceProvider.TokenVerifier(ctx)),
 			),
 		),
 	)

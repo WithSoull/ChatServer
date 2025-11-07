@@ -53,6 +53,11 @@ type StreamingConfig interface {
 	BufferSize() int64
 }
 
+type JWTConfig interface {
+	RefreshTokenSecretKey() string
+	AccessTokenSecretKey() string
+}
+
 type SaramaConfig interface {
 	Config() *sarama.Config
 	GroupID() string

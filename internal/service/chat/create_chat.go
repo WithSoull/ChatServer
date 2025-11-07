@@ -6,10 +6,16 @@ import (
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/ChatServer/internal/model"
 	"github.com/WithSoull/ChatServer/internal/validator"
+	"github.com/WithSoull/platform_common/pkg/contextx/claimsctx"
 	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
-func (s *Service) CreateChat(ctx context.Context, senderID int64, chat_info model.ChatInfo) (int64, error) {
+func (s *Service) CreateChat(ctx context.Context, chat_info model.ChatInfo) (int64, error) {
+	senderID, ok := claimsctx.ExtractUserID(ctx)
+	if !ok {
+		return 0, domainerrors.ErrFailedToVerify
+	}
+
 	var chatID int64
 
 	if err := validate.Validate(

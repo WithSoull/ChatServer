@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) UpdateUserRole(ctx context.Context, req *desc.UpdateUserRoleRequest) (*emptypb.Empty, error) {
-	err := h.service.UpdateUserRole(ctx, req.GetSenderId(), req.GetChatId(), req.GetUserId(), converter.FromProtoToModelRole(req.Role))
+	err := h.service.UpdateUserRole(ctx, req.GetChatId(), req.GetUserId(), converter.FromProtoToModelRole(req.Role))
 
 	return &emptypb.Empty{}, err
 }

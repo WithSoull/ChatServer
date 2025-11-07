@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) RemoveUser(ctx context.Context, req *desc.RemoveUserRequest) (*emptypb.Empty, error) {
-	err := h.service.RemoveUser(ctx, req.GetSenderId(), req.GetChatId(), req.GetUserId())
+	err := h.service.RemoveUser(ctx, req.GetChatId(), req.GetUserId())
 
 	return &emptypb.Empty{}, err
 }

@@ -13,6 +13,9 @@ var (
 	ErrMessageNotFound = sys.NewCommonError("message not found", codes.NotFound)
 	ErrChatNotFound    = sys.NewCommonError("chat does not exist", codes.NotFound)
 
+	// Verify errors
+	ErrFailedToVerify = sys.NewCommonError("failed to verify user", codes.Unauthenticated)
+
 	// Permission errors (PermissionDenied)
 	ErrForbidden                = sys.NewCommonError("action forbidden", codes.PermissionDenied)
 	ErrUserNotMember            = sys.NewCommonError("user are not a member of the chat", codes.PermissionDenied)

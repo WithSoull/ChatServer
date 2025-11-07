@@ -26,6 +26,8 @@ import (
 	platformKafka "github.com/WithSoull/platform_common/pkg/kafka"
 	platformKafkaConsumer "github.com/WithSoull/platform_common/pkg/kafka/consumer"
 	"github.com/WithSoull/platform_common/pkg/logger"
+	"github.com/WithSoull/platform_common/pkg/tokens"
+	"github.com/WithSoull/platform_common/pkg/tokens/jwt"
 	redigo "github.com/gomodule/redigo/redis"
 )
 
@@ -40,8 +42,9 @@ type serviceProvider struct {
 	chatParticipantRepo repository.ChatParticipantRepo
 	msgRepo             repository.MessageRepo
 
-	chatService service.ChatService
-	chatHandler desc.ChatV1Server
+	chatService   service.ChatService
+	tokenVerifier tokens.TokenVerifier
+	chatHandler   desc.ChatV1Server
 
 	userCreatedConsumerGroup sarama.ConsumerGroup
 	userCreatedConsumer      platformKafka.Consumer
@@ -154,9 +157,16 @@ func (s *serviceProvider) ChatService(ctx context.Context) service.ChatService {
 	return s.chatService
 }
 
+func (s *serviceProvider) TokenVerifier(ctx context.Context) tokens.TokenVerifier {
+	if s.tokenVerifier == nil {
+		s.tokenVerifier = jwt.NewJWTVerifier(config.AppConfig().JWT)
+	}
+	return s.tokenVerifier
+}
+
 func (s *serviceProvider) ChatHandler(ctx context.Context) desc.ChatV1Server {
 	if s.chatHandler == nil {
-		s.chatHandler = chatHandler.NewHandler(s.ChatService(ctx))
+		s.chatHandler = chatHandler.NewHandler(s.ChatService(ctx), s.TokenVerifier(ctx))
 	}
 
 	return s.chatHandler

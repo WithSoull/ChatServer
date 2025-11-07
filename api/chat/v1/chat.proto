@@ -97,7 +97,7 @@ enum Role {
 message ChatInfo {
   string name = 1;
   string description = 2;
-  repeated int64 user_ids = 4;
+  repeated int64 user_ids = 3;
 }
 
 message Chat {
@@ -121,13 +121,10 @@ message Message {
 // --------------------
 message ConnectChatRequest {
   int64 chat_id = 1;
-  int64 sender_id = 10;
 }
 
 message CreateChatRequest {
   ChatInfo chat_info = 1;
-
-  int64 sender_id = 10;
 }
 
 message CreateChatResponse {
@@ -136,14 +133,10 @@ message CreateChatResponse {
 
 message DeleteChatRequest {
   int64 chat_id = 1;
-
-  int64 sender_id = 10;
 }
 
 message GetChatRequest {
   int64 chat_id = 1;
-
-  int64 sender_id = 10;
 }
 
 message GetChatResponse {
@@ -158,23 +151,17 @@ message AddUserRequest {
   int64 chat_id = 1;
   int64 user_id = 2;
   Role role = 3;
-
-  int64 sender_id = 10;
 }
 
 message RemoveUserRequest {
   int64 chat_id = 1;
   int64 user_id = 2;
-
-  int64 sender_id = 10;
 }
 
 message UpdateUserRoleRequest {
   int64 chat_id = 1;
   int64 user_id = 2;
   Role role = 3;
-
-  int64 sender_id = 10;
 }
 
 // --------------------
@@ -183,26 +170,18 @@ message UpdateUserRoleRequest {
 message SendMessageRequest {
   int64 chat_id = 1;
   string text = 2;
-
-  int64 sender_id = 10;
 }
 
 message DeleteMessageRequest {
   int64 message_id = 1;
-
-  int64 sender_id = 10;
 }
 
 message EditMessageRequest {
   int64 message_id = 1;
   string new_text = 2;
-
-  int64 sender_id = 10;
 }
 
 message PinMessageRequest {
   int64 message_id = 1;
-  bool new_is_pinned = 3;
-
-  int64 sender_id = 10;
+  bool new_is_pinned = 2;
 }

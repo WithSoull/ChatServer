@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) AddUser(ctx context.Context, req *chat_v1.AddUserRequest) (*emptypb.Empty, error) {
-	err := h.service.AddUser(ctx, req.GetSenderId(), req.GetChatId(), req.GetUserId(), converter.FromProtoToModelRole(req.GetRole()))
+	err := h.service.AddUser(ctx, req.GetChatId(), req.GetUserId(), converter.FromProtoToModelRole(req.GetRole()))
 
 	return &emptypb.Empty{}, err
 }

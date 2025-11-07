@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) GetChat(ctx context.Context, req *desc.GetChatRequest) (*desc.GetChatResponse, error) {
-	chat, msgs, err := h.service.GetChat(ctx, req.GetSenderId(), req.GetChatId())
+	chat, msgs, err := h.service.GetChat(ctx, req.GetChatId())
 	if err != nil {
 		return nil, err
 	}

@@ -8,5 +8,5 @@ import (
 )
 
 func (h *Handler) SendMessage(ctx context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, h.service.SendMessage(ctx, req.GetSenderId(), req.GetChatId(), req.GetText())
+	return &emptypb.Empty{}, h.service.SendMessage(ctx, req.GetChatId(), req.GetText())
 }

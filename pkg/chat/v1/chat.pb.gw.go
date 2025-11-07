@@ -57,10 +57,6 @@ func local_request_ChatV1_CreateChat_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-var (
-	filter_ChatV1_DeleteChat_0 = &utilities.DoubleArray{Encoding: map[string]int{"chat_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
-
 func request_ChatV1_DeleteChat_0(ctx context.Context, marshaler runtime.Marshaler, client ChatV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteChatRequest
 	var metadata runtime.ServerMetadata
@@ -80,13 +76,6 @@ func request_ChatV1_DeleteChat_0(ctx context.Context, marshaler runtime.Marshale
 	protoReq.ChatId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_DeleteChat_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.DeleteChat(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -115,21 +104,10 @@ func local_request_ChatV1_DeleteChat_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
 	}
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_DeleteChat_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
 	msg, err := server.DeleteChat(ctx, &protoReq)
 	return msg, metadata, err
 
 }
-
-var (
-	filter_ChatV1_GetChat_0 = &utilities.DoubleArray{Encoding: map[string]int{"chat_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
 
 func request_ChatV1_GetChat_0(ctx context.Context, marshaler runtime.Marshaler, client ChatV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetChatRequest
@@ -150,13 +128,6 @@ func request_ChatV1_GetChat_0(ctx context.Context, marshaler runtime.Marshaler, 
 	protoReq.ChatId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_GetChat_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetChat(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -183,13 +154,6 @@ func local_request_ChatV1_GetChat_0(ctx context.Context, marshaler runtime.Marsh
 	protoReq.ChatId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_GetChat_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.GetChat(ctx, &protoReq)
@@ -277,10 +241,6 @@ func local_request_ChatV1_AddUser_0(ctx context.Context, marshaler runtime.Marsh
 
 }
 
-var (
-	filter_ChatV1_RemoveUser_0 = &utilities.DoubleArray{Encoding: map[string]int{"chat_id": 0, "user_id": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_ChatV1_RemoveUser_0(ctx context.Context, marshaler runtime.Marshaler, client ChatV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RemoveUserRequest
 	var metadata runtime.ServerMetadata
@@ -310,13 +270,6 @@ func request_ChatV1_RemoveUser_0(ctx context.Context, marshaler runtime.Marshale
 	protoReq.UserId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_RemoveUser_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.RemoveUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -353,13 +306,6 @@ func local_request_ChatV1_RemoveUser_0(ctx context.Context, marshaler runtime.Ma
 	protoReq.UserId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_RemoveUser_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.RemoveUser(ctx, &protoReq)
@@ -507,10 +453,6 @@ func local_request_ChatV1_SendMessage_0(ctx context.Context, marshaler runtime.M
 
 }
 
-var (
-	filter_ChatV1_DeleteMessage_0 = &utilities.DoubleArray{Encoding: map[string]int{"message_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
-
 func request_ChatV1_DeleteMessage_0(ctx context.Context, marshaler runtime.Marshaler, client ChatV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteMessageRequest
 	var metadata runtime.ServerMetadata
@@ -530,13 +472,6 @@ func request_ChatV1_DeleteMessage_0(ctx context.Context, marshaler runtime.Marsh
 	protoReq.MessageId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "message_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_DeleteMessage_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.DeleteMessage(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -563,13 +498,6 @@ func local_request_ChatV1_DeleteMessage_0(ctx context.Context, marshaler runtime
 	protoReq.MessageId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "message_id", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_DeleteMessage_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.DeleteMessage(ctx, &protoReq)

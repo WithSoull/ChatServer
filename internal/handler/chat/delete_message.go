@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) DeleteMessage(ctx context.Context, req *desc.DeleteMessageRequest) (*emptypb.Empty, error) {
-	err := h.service.DeleteMessage(ctx, req.GetSenderId(), req.GetMessageId())
+	err := h.service.DeleteMessage(ctx, req.GetMessageId())
 
 	return &emptypb.Empty{}, err
 }

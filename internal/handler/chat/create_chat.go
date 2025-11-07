@@ -8,11 +8,7 @@ import (
 )
 
 func (h *Handler) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
-	chatId, err := h.service.CreateChat(
-		ctx,
-		req.GetSenderId(),
-		converter.FromProtoToModelChatInfo(req.ChatInfo),
-	)
+	chatId, err := h.service.CreateChat(ctx, converter.FromProtoToModelChatInfo(req.ChatInfo))
 
 	return &desc.CreateChatResponse{
 		ChatId: chatId,
