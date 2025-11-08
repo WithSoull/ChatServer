@@ -60,7 +60,7 @@ service ChatV1 {
   // --------------------
   rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      post: "/api/v1/chats/{chat_id}/messages"
+      post: "/api/v1/chats/{chat_id}"
       body: "*" 
     };
   };

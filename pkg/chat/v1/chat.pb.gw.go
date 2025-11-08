@@ -747,7 +747,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/messages"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1018,7 +1018,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/messages"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1116,7 +1116,7 @@ var (
 
 	pattern_ChatV1_UpdateUserRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "chats", "chat_id", "update"}, ""))
 
-	pattern_ChatV1_SendMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "chats", "chat_id", "messages"}, ""))
+	pattern_ChatV1_SendMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "chats", "chat_id"}, ""))
 
 	pattern_ChatV1_DeleteMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "messages", "message_id"}, ""))
 
