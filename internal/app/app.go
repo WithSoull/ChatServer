@@ -27,6 +27,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -137,14 +139,21 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 		),
 	)
 
+	// Setting ChatServer
+	desc.RegisterChatV1Server(a.grpcServer, a.serviceProvider.ChatHandler(ctx))
+
+	// Setting HealthServer
+	healthServer := health.NewServer()
+	healthServer.SetServingStatus("chat.v1.ChatServer", grpc_health_v1.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
+	grpc_health_v1.RegisterHealthServer(a.grpcServer, healthServer)
+
+	reflection.Register(a.grpcServer)
+
 	closer.AddNamed("GRPC server", func(ctx context.Context) error {
 		a.grpcServer.GracefulStop()
 		return nil
 	})
-
-	reflection.Register(a.grpcServer)
-
-	desc.RegisterChatV1Server(a.grpcServer, a.serviceProvider.ChatHandler(ctx))
 
 	return nil
 }
