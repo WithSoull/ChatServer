@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/WithSoull/platform_common/pkg/contextx/claimsctx"
-	"github.com/WithSoull/platform_common/pkg/logger"
 	"github.com/WithSoull/platform_common/pkg/sys"
 	"github.com/WithSoull/platform_common/pkg/sys/codes"
 	"github.com/WithSoull/platform_common/pkg/tokens"
@@ -16,7 +15,6 @@ import (
 func TokenVerifierUnaryInterceptor(verifier tokens.TokenVerifier) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (res any, err error) {
 		// skip health checks
-		logger.Warn(ctx, info.FullMethod)
 		if strings.HasPrefix(info.FullMethod, "/grpc.health.v1.Health") ||
 			strings.HasPrefix(info.FullMethod, "/grpc.reflection") {
 			return handler(ctx, req)
@@ -43,7 +41,6 @@ func (w *wrappedServerStream) Context() context.Context {
 func TokenVerifierStreamInterceptor(verifier tokens.TokenVerifier) grpc.StreamServerInterceptor {
 	return func(srv any, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 		// skip health checks
-		logger.Warn(ss.Context(), info.FullMethod)
 		if strings.HasPrefix(info.FullMethod, "/grpc.health.v1.Health") ||
 			strings.HasPrefix(info.FullMethod, "/grpc.reflection") {
 			return handler(srv, ss)
@@ -64,7 +61,6 @@ func TokenVerifierStreamInterceptor(verifier tokens.TokenVerifier) grpc.StreamSe
 }
 
 func VerifyToken(ctx context.Context, verifier tokens.TokenVerifier) (context.Context, error) {
-	logger.Warn(ctx, "Verify token has been called")
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return ctx, sys.NewCommonError("metadata not provided", codes.Unauthenticated)
