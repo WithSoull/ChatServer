@@ -186,16 +186,6 @@ func request_ChatV1_AddUser_0(ctx context.Context, marshaler runtime.Marshaler, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
 	}
 
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
-	}
-
-	protoReq.UserId, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
-	}
-
 	msg, err := client.AddUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -226,20 +216,14 @@ func local_request_ChatV1_AddUser_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
 	}
 
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
-	}
-
-	protoReq.UserId, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
-	}
-
 	msg, err := server.AddUser(ctx, &protoReq)
 	return msg, metadata, err
 
 }
+
+var (
+	filter_ChatV1_RemoveUser_0 = &utilities.DoubleArray{Encoding: map[string]int{"chat_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_ChatV1_RemoveUser_0(ctx context.Context, marshaler runtime.Marshaler, client ChatV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RemoveUserRequest
@@ -262,14 +246,11 @@ func request_ChatV1_RemoveUser_0(ctx context.Context, marshaler runtime.Marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
 	}
 
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	protoReq.UserId, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_RemoveUser_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.RemoveUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -298,14 +279,11 @@ func local_request_ChatV1_RemoveUser_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
 	}
 
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	protoReq.UserId, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ChatV1_RemoveUser_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.RemoveUser(ctx, &protoReq)
@@ -338,16 +316,6 @@ func request_ChatV1_UpdateUserRole_0(ctx context.Context, marshaler runtime.Mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
 	}
 
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
-	}
-
-	protoReq.UserId, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
-	}
-
 	msg, err := client.UpdateUserRole(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -376,16 +344,6 @@ func local_request_ChatV1_UpdateUserRole_0(ctx context.Context, marshaler runtim
 	protoReq.ChatId, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "chat_id", err)
-	}
-
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
-	}
-
-	protoReq.UserId, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
 	}
 
 	msg, err := server.UpdateUserRole(ctx, &protoReq)
@@ -639,7 +597,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/CreateChat", runtime.WithHTTPPathPattern("/chat/v1/chats"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/CreateChat", runtime.WithHTTPPathPattern("/api/v1/chats"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -664,7 +622,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteChat", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteChat", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -689,7 +647,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/GetChat", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/GetChat", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -714,7 +672,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/AddUser", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/users/{user_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/AddUser", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -739,7 +697,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/RemoveUser", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/users/{user_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/RemoveUser", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -764,7 +722,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/UpdateUserRole", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/users/{user_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/UpdateUserRole", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -789,7 +747,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/messages"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/messages"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -814,7 +772,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteMessage", runtime.WithHTTPPathPattern("/chat/v1/messages/{message_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteMessage", runtime.WithHTTPPathPattern("/api/v1/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -839,7 +797,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/EditMessage", runtime.WithHTTPPathPattern("/chat/v1/messages/{message_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/EditMessage", runtime.WithHTTPPathPattern("/api/v1/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -864,7 +822,7 @@ func RegisterChatV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/PinMessage", runtime.WithHTTPPathPattern("/chat/v1/messages/{message_id}/pin"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/chat_v1.ChatV1/PinMessage", runtime.WithHTTPPathPattern("/api/v1/messages/{message_id}/pin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -928,7 +886,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/CreateChat", runtime.WithHTTPPathPattern("/chat/v1/chats"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/CreateChat", runtime.WithHTTPPathPattern("/api/v1/chats"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -950,7 +908,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteChat", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteChat", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -972,7 +930,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/GetChat", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/GetChat", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -994,7 +952,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/AddUser", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/users/{user_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/AddUser", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1016,7 +974,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/RemoveUser", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/users/{user_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/RemoveUser", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1038,7 +996,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/UpdateUserRole", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/users/{user_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/UpdateUserRole", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1060,7 +1018,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/chat/v1/chats/{chat_id}/messages"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/SendMessage", runtime.WithHTTPPathPattern("/api/v1/chats/{chat_id}/messages"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1082,7 +1040,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteMessage", runtime.WithHTTPPathPattern("/chat/v1/messages/{message_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/DeleteMessage", runtime.WithHTTPPathPattern("/api/v1/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1104,7 +1062,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/EditMessage", runtime.WithHTTPPathPattern("/chat/v1/messages/{message_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/EditMessage", runtime.WithHTTPPathPattern("/api/v1/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1126,7 +1084,7 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/PinMessage", runtime.WithHTTPPathPattern("/chat/v1/messages/{message_id}/pin"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/chat_v1.ChatV1/PinMessage", runtime.WithHTTPPathPattern("/api/v1/messages/{message_id}/pin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1146,25 +1104,25 @@ func RegisterChatV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 }
 
 var (
-	pattern_ChatV1_CreateChat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"chat", "v1", "chats"}, ""))
+	pattern_ChatV1_CreateChat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "chats"}, ""))
 
-	pattern_ChatV1_DeleteChat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"chat", "v1", "chats", "chat_id"}, ""))
+	pattern_ChatV1_DeleteChat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "chats", "chat_id"}, ""))
 
-	pattern_ChatV1_GetChat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"chat", "v1", "chats", "chat_id"}, ""))
+	pattern_ChatV1_GetChat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "chats", "chat_id"}, ""))
 
-	pattern_ChatV1_AddUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"chat", "v1", "chats", "chat_id", "users", "user_id"}, ""))
+	pattern_ChatV1_AddUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "chats", "chat_id", "add"}, ""))
 
-	pattern_ChatV1_RemoveUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"chat", "v1", "chats", "chat_id", "users", "user_id"}, ""))
+	pattern_ChatV1_RemoveUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "chats", "chat_id", "remove"}, ""))
 
-	pattern_ChatV1_UpdateUserRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"chat", "v1", "chats", "chat_id", "users", "user_id"}, ""))
+	pattern_ChatV1_UpdateUserRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "chats", "chat_id", "update"}, ""))
 
-	pattern_ChatV1_SendMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"chat", "v1", "chats", "chat_id", "messages"}, ""))
+	pattern_ChatV1_SendMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "chats", "chat_id", "messages"}, ""))
 
-	pattern_ChatV1_DeleteMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"chat", "v1", "messages", "message_id"}, ""))
+	pattern_ChatV1_DeleteMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "messages", "message_id"}, ""))
 
-	pattern_ChatV1_EditMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"chat", "v1", "messages", "message_id"}, ""))
+	pattern_ChatV1_EditMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "messages", "message_id"}, ""))
 
-	pattern_ChatV1_PinMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"chat", "v1", "messages", "message_id", "pin"}, ""))
+	pattern_ChatV1_PinMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "messages", "message_id", "pin"}, ""))
 )
 
 var (

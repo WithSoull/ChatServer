@@ -16,20 +16,21 @@ service ChatV1 {
   // Chat Endpoints
   // --------------------
   rpc ConnectChat(ConnectChatRequest) returns (stream Message);
+
   rpc CreateChat(CreateChatRequest) returns (CreateChatResponse){
     option (google.api.http) = {
-      post: "/chat/v1/chats"
+      post: "/api/v1/chats"
       body: "*" 
     };
   };
   rpc DeleteChat(DeleteChatRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      delete: "/chat/v1/chats/{chat_id}"
+      delete: "/api/v1/chats/{chat_id}"
     };
   };
   rpc GetChat(GetChatRequest) returns (GetChatResponse){
     option (google.api.http) = {
-      get: "/chat/v1/chats/{chat_id}"
+      get: "/api/v1/chats/{chat_id}"
     };
   };
 
@@ -38,18 +39,18 @@ service ChatV1 {
   // --------------------
   rpc AddUser(AddUserRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      post: "/chat/v1/chats/{chat_id}/users/{user_id}"
+      post: "/api/v1/chats/{chat_id}/add"
       body: "*" 
     };
   };
   rpc RemoveUser(RemoveUserRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      delete: "/chat/v1/chats/{chat_id}/users/{user_id}"
+      delete: "/api/v1/chats/{chat_id}/remove"
     };
   };
   rpc UpdateUserRole(UpdateUserRoleRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      patch: "/chat/v1/chats/{chat_id}/users/{user_id}"
+      patch: "/api/v1/chats/{chat_id}/update"
       body: "*" 
     };
   };
@@ -59,24 +60,24 @@ service ChatV1 {
   // --------------------
   rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      post: "/chat/v1/chats/{chat_id}/messages"
+      post: "/api/v1/chats/{chat_id}/messages"
       body: "*" 
     };
   };
   rpc DeleteMessage(DeleteMessageRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      delete: "/chat/v1/messages/{message_id}"
+      delete: "/api/v1/messages/{message_id}"
     };
   };
   rpc EditMessage(EditMessageRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      patch: "/chat/v1/messages/{message_id}"
+      patch: "/api/v1/messages/{message_id}"
       body: "*" 
     };
   };
   rpc PinMessage(PinMessageRequest) returns (google.protobuf.Empty){
     option (google.api.http) = {
-      patch: "/chat/v1/messages/{message_id}/pin"
+      patch: "/api/v1/messages/{message_id}/pin"
       body: "*" 
     };
   };
