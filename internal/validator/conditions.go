@@ -2,15 +2,30 @@ package validator
 
 import (
 	"context"
+	"strings"
+	"unicode/utf8"
 
 	domainerrors "github.com/WithSoull/ChatServer/internal/errors/domain"
 	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
+// MaxMessageLength is the maximum allowed message length in runes.
+const MaxMessageLength = 4096
+
 func ValidateNotEmptyMessage(text string) validate.Condition {
 	return func(ctx context.Context) error {
-		if text == "" {
+		if strings.TrimSpace(text) == "" {
 			return domainerrors.ErrEmptyMessageText
+		}
+
+		return nil
+	}
+}
+
+func ValidateMessageMaxLength(text string) validate.Condition {
+	return func(ctx context.Context) error {
+		if utf8.RuneCountInString(text) > MaxMessageLength {
+			return domainerrors.ErrMessageTooLong
 		}
 
 		return nil
@@ -19,7 +34,7 @@ func ValidateNotEmptyMessage(text string) validate.Condition {
 
 func ValidateEmptyName(name string) validate.Condition {
 	return func(ctx context.Context) error {
-		if name == "" {
+		if strings.TrimSpace(name) == "" {
 			return domainerrors.ErrEmptyChatName
 		}
 
@@ -29,7 +44,7 @@ func ValidateEmptyName(name string) validate.Condition {
 
 func ValidateNoChangesProvided(text string) validate.Condition {
 	return func(ctx context.Context) error {
-		if text == "" {
+		if strings.TrimSpace(text) == "" {
 			return domainerrors.ErrNoChangesProvided
 		}
 

@@ -36,6 +36,7 @@ var (
 	ErrNoChangesProvided    = validate.NewValidationErrors("no changes provided")
 	ErrEmptyChatName        = validate.NewValidationErrors("name of the chat cannot be empty")
 	ErrEmptyMessageText     = validate.NewValidationErrors("message text cannot be empty")
+	ErrMessageTooLong       = validate.NewValidationErrors("message text cannot be longer than 4096 characters")
 
 	// Conflict errors (AlreadyExists)
 	ErrUserAlreadyInChat = sys.NewCommonError("user is already in the chat", codes.AlreadyExists)
