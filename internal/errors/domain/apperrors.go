@@ -35,6 +35,7 @@ var (
 	ErrDuplicateParticipant = validate.NewValidationErrors("each participant can only be added once")
 	ErrNoChangesProvided    = validate.NewValidationErrors("no changes provided")
 	ErrEmptyChatName        = validate.NewValidationErrors("name of the chat cannot be empty")
+	ErrChatNameTooLong      = validate.NewValidationErrors("name of the chat cannot be longer than 128 characters")
 	ErrEmptyMessageText     = validate.NewValidationErrors("message text cannot be empty")
 	ErrMessageTooLong       = validate.NewValidationErrors("message text cannot be longer than 4096 characters")
 

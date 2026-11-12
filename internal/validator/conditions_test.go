@@ -75,6 +75,17 @@ func TestValidateEmptyName(t *testing.T) {
 	})
 }
 
+func TestValidateChatNameMaxLength(t *testing.T) {
+	runConditionCases(t, ValidateChatNameMaxLength, []conditionCase{
+		{name: "empty", input: ""},
+		{name: "short", input: "general"},
+		{name: "exactly max ascii", input: strings.Repeat("a", MaxChatNameLength)},
+		{name: "exactly max cyrillic", input: strings.Repeat("я", MaxChatNameLength)},
+		{name: "max plus one ascii", input: strings.Repeat("a", MaxChatNameLength+1), wantErr: domainerrors.ErrChatNameTooLong},
+		{name: "max plus one emoji", input: strings.Repeat("😀", MaxChatNameLength+1), wantErr: domainerrors.ErrChatNameTooLong},
+	})
+}
+
 func TestValidateNoChangesProvided(t *testing.T) {
 	runConditionCases(t, ValidateNoChangesProvided, []conditionCase{
 		{name: "empty", input: "", wantErr: domainerrors.ErrNoChangesProvided},

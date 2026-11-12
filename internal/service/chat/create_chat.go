@@ -21,6 +21,7 @@ func (s *Service) CreateChat(ctx context.Context, chat_info model.ChatInfo) (int
 	if err := validate.Validate(
 		ctx,
 		validator.ValidateEmptyName(chat_info.Name),
+		validator.ValidateChatNameMaxLength(chat_info.Name),
 	); err != nil {
 		return 0, err
 	}
