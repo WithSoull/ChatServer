@@ -20,6 +20,7 @@ func (s *Service) EditMessage(ctx context.Context, messageID int64, newText stri
 	if err := validate.Validate(
 		ctx,
 		validator.ValidateNoChangesProvided(newText),
+		validator.ValidateMessageLength(newText),
 	); err != nil {
 		return err
 	}

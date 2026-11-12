@@ -8,6 +8,9 @@ import (
 	"github.com/WithSoull/platform_common/pkg/sys/validate"
 )
 
+// MaxMessageLength is the maximum message length in characters (runes), not bytes.
+const MaxMessageLength = 4096
+
 var (
 	// Resource errors (NotFound)
 	ErrMessageNotFound = sys.NewCommonError("message not found", codes.NotFound)
@@ -36,6 +39,7 @@ var (
 	ErrNoChangesProvided    = validate.NewValidationErrors("no changes provided")
 	ErrEmptyChatName        = validate.NewValidationErrors("name of the chat cannot be empty")
 	ErrEmptyMessageText     = validate.NewValidationErrors("message text cannot be empty")
+	ErrMessageTooLong       = validate.NewValidationErrors(fmt.Sprintf("message text cannot be longer than %d characters", MaxMessageLength))
 
 	// Conflict errors (AlreadyExists)
 	ErrUserAlreadyInChat = sys.NewCommonError("user is already in the chat", codes.AlreadyExists)

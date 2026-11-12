@@ -20,6 +20,7 @@ func (s *Service) SendMessage(ctx context.Context, chatID int64, text string) er
 	if err := validate.Validate(
 		ctx,
 		validator.ValidateNotEmptyMessage(text),
+		validator.ValidateMessageLength(text),
 	); err != nil {
 		return err
 	}
